@@ -307,7 +307,6 @@ export function rootReducer(state = initialState, action) {
     case ActionTypes.CLICK_NODE: {
       const prevSelectedNodeId = state.get('selectedNodeId');
       const prevDetailsStackSize = state.get('nodeDetails').size;
-
       // click on sibling closes all
       state = closeAllNodeDetails(state);
       // select new node if it's not the same (in that case just delesect)
@@ -584,7 +583,7 @@ export function rootReducer(state = initialState, action) {
       if (state.get('nodesLoaded') && state.get('pausedAt')) {
         return state;
       }
-
+      console.log(action.delta);
       log(
         'RECEIVE_NODES_DELTA',
         'remove', size(action.delta.remove),

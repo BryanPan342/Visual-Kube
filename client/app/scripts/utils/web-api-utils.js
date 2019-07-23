@@ -398,6 +398,7 @@ function getTopologiesOnce(getState, dispatch) {
 function updateWebsocketChannel(getState, dispatch, forceRequest) {
   let topologyUrl;
   let topologyOptions;
+<<<<<<< HEAD
   // if (isGraphViewModeSelector(getState())) {
   //   // Specify web socket url to /containers
   //   topologyUrl = '/api/topology/pods';
@@ -414,12 +415,24 @@ function updateWebsocketChannel(getState, dispatch, forceRequest) {
   // }
   const websocketUrl = buildWebsocketUrl(topologyUrl, topologyOptions, getState());
   console.log(websocketUrl);
+=======
+  if (isGraphViewModeSelector(getState())) {
+    // Specify web socket url to /containers
+    topologyUrl = '/api/topology/pods';
+  } else if (isDashboardViewModeSelector(getState())) {
+    topologyUrl = '/api/topology/hosts';
+  } else {
+    topologyUrl = getCurrentTopologyUrl(getState());
+    // topologyOptions = activeTopologyOptionsSelector(getState());
+    topologyOptions = makeMap();
+  }
+  const websocketUrl = buildWebsocketUrl(topologyUrl, topologyOptions, getState());
+>>>>>>> master
   // Only recreate websocket if url changed or if forced (weave cloud instance reload);
   const isNewUrl = websocketUrl !== currentUrl;
   // `topologyUrl` can be undefined initially, so only create a socket if it is truthy
   // and no socket exists, or if we get a new url.
   if (topologyUrl && (!socket || isNewUrl || forceRequest)) {
-    console.log(6);
     createWebsocket(websocketUrl, getState, dispatch);
     currentUrl = websocketUrl;
   }
@@ -628,4 +641,10 @@ export function teardownWebsockets() {
     socket = null;
     currentUrl = null;
   }
+}
+
+export async function APIcall(node_namespace, node_id, node_label){
+  let response = await fetch(`http://localhost:8000/api/v1/namespaces/${node_namespace}/pods/${node_label}`, {method: 'GET', mode: 'cors'});
+  let json = await response.json();
+  return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: node_label};
 }
