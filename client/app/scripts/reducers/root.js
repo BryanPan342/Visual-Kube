@@ -266,7 +266,6 @@ export function rootReducer(state = initialState, action) {
     }
 
     case ActionTypes.SET_VIEW_MODE: {
-      console.log(3);
       // state = state.set('viewingNodeId', null);
       // possibly only do the below line if in table view
       // state = state.set('nodes', makeMap());     
@@ -367,7 +366,7 @@ export function rootReducer(state = initialState, action) {
 
     case ActionTypes.CLICK_TOPOLOGY: {
       state = closeAllNodeDetails(state);
-
+      state = state.set('viewingNodeId', null);
       const currentTopologyId = state.get('currentTopologyId');
       if (action.topologyId !== currentTopologyId) {
         state = setTopology(state, action.topologyId);
