@@ -583,7 +583,7 @@ export function rootReducer(state = initialState, action) {
       if (state.get('nodesLoaded') && state.get('pausedAt')) {
         return state;
       }
-
+      console.log(action.delta);
       log(
         'RECEIVE_NODES_DELTA',
         'remove', size(action.delta.remove),
