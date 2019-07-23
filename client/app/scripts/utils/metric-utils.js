@@ -10,7 +10,7 @@ export function getClipPathDefinition(clipId, height, radius) {
   return (
     <defs>
       <clipPath id={clipId} transform={`scale(${2 * radius})`}>
-        <rect width={2} height={2} x={-1} y={barHeight} />
+        <rect width={2} height={20} x={-1} y={barHeight} />
       </clipPath>
     </defs>
   );

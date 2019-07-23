@@ -4,6 +4,7 @@
 
 $color-ashPurple: #b19cd9;
 $color-ashBlue: #99cccc;
+$color-ashRed: 	#DC3545;
 
 /* sass-lint:disable variable-for-property */
 @font-face {
@@ -1860,12 +1861,20 @@ $border-radius-hard: 25px;
   cursor: pointer;
 }
 
+.err-disabled {
+  background-color: $color-gray-100 !important;
+  color: $color-gray-600;
+  border-color: $color-gray-600 !important;
+}
+.err-disabled:hover {
+  background-color: $color-gray-100;
+  color: $color-gray-600;
+}
+
 .err-toggle {
   background-color: $color-white;
   opacity: 1;
 }
-
-$color-ashRed: 	#DC3545;
 
 .err-toggle:hover {
   background-color: $color-ashRed;

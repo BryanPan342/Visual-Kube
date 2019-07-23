@@ -38,19 +38,19 @@ class NodeContainer extends React.Component {
 
   ashShape(ashShapeString)
   {
-    if (ashShapeString === 'square')
+    if (ashShapeString === 'circle')
     {
       ashColorCode = 1;
     }
-    else if (ashShapeString === 'hexagon')
+    else if (ashShapeString === 'heptagon')
     {
       ashColorCode = 2;
     }
-    else if (ashShapeString === 'heptagon')
+    else if (ashShapeString === 'hexagon')
     {
       ashColorCode = 3;
     }
-    else if (ashShapeString === 'circle')
+    else if (ashShapeString === 'square')
     {
       ashColorCode = 4;
     }
@@ -81,7 +81,29 @@ class NodeContainer extends React.Component {
     //   return rgb(0,0,0);
     // }
 
-    return rgb(177, 156, 217);
+    return rgb(177, 156, 217); 
+  }
+
+  ashMetric(metricFormattedValue)
+  {
+    if (metricFormattedValue)
+    {
+      return metricFormattedValue;
+    }
+    else {
+      switch(ashColorCode) {
+        case 1:
+          return "Host";
+        case 2:
+          return "Pod";
+        case 3:
+          return "Cont.";
+        case 4:
+          return "App";
+        default:
+          return "Node";
+      }
+    }
   }
 
   renderPrependedInfo = () => {
@@ -107,9 +129,9 @@ class NodeContainer extends React.Component {
       rank, label, pseudo, metric, showingNetworks, networks
     } = this.props;
     const { hasMetric, height, formattedValue } = getMetricValue(metric);
+   
     const metricFormattedValue = !pseudo && hasMetric ? formattedValue : '';
     const labelOffset = (showingNetworks && networks) ? 10 : 0;
-
     return (
       <GraphNode
         id={this.props.id}
@@ -128,7 +150,7 @@ class NodeContainer extends React.Component {
         forceSvg={this.props.exportingGraph}
         searchTerms={this.props.searchTerms}
         metricColor={getMetricColor(metric)}
-        metricFormattedValue={metricFormattedValue}
+        metricFormattedValue={this.ashMetric(metricFormattedValue)}
         metricNumericValue={height}
         renderPrependedInfo={this.renderPrependedInfo}
         renderAppendedInfo={this.renderAppendedInfo}

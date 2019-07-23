@@ -23,8 +23,8 @@ export default class ErrorToggle extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClick} className={(this.state.isToggleOn && getNumErrors() > 0) ? 'err-toggle err-toggle-open' : 'err-toggle err-toggle-closed'} color="danger" outline>
-          <Badge color="danger">{getNumErrors()}</Badge> Alerts 
+        <Button onClick={this.handleClick} className={getNumErrors() === 0 ? 'err-toggle err-toggle-closed err-disabled' : this.state.isToggleOn ? 'err-toggle err-toggle-open' : 'err-toggle err-toggle-closed'} color="danger" outline>
+          <Badge className={((getNumErrors() === 0) ? 'err-disabled' : '')} color="danger">{getNumErrors()}</Badge> Alerts 
         </Button>
       </div>
     );

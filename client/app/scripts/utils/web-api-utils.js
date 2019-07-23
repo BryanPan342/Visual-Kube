@@ -287,7 +287,6 @@ function getNodesOnce(getState, dispatch) {
       dispatch(receiveError(url));
     },
     success: (res) => {
-      console.log(8);
       if (state.get('viewingNodeId')) {
         let _map = {};
         res.node.children[0].nodes.map((x) => {
@@ -375,7 +374,6 @@ function pollTopologies(getState, dispatch, initialPoll = false) {
 }
 
 function getTopologiesOnce(getState, dispatch) {
-  console.log(9);
   const url = topologiesUrl(getState());
   doRequest({
     error: (req) => {
@@ -390,7 +388,6 @@ function getTopologiesOnce(getState, dispatch) {
 }
 
 function updateWebsocketChannel(getState, dispatch, forceRequest) {
-  console.log(12);
   let topologyUrl;
   let topologyOptions;
   // if (isGraphViewModeSelector(getState())) {
@@ -401,20 +398,15 @@ function updateWebsocketChannel(getState, dispatch, forceRequest) {
     topologyUrl = '/api/topology/hosts';
   } else {
     topologyUrl = getCurrentTopologyUrl(getState());
-    console.log(topologyUrl);
     // topologyOptions = activeTopologyOptionsSelector(getState());
     topologyOptions = makeMap();
-    console.log(topologyOptions);
   }
   const websocketUrl = buildWebsocketUrl(topologyUrl, topologyOptions, getState());
-  console.log(1);
-  console.log(websocketUrl);
   // Only recreate websocket if url changed or if forced (weave cloud instance reload);
   const isNewUrl = websocketUrl !== currentUrl;
   // `topologyUrl` can be undefined initially, so only create a socket if it is truthy
   // and no socket exists, or if we get a new url.
   if (topologyUrl && (!socket || isNewUrl || forceRequest)) {
-    console.log(6);
     createWebsocket(websocketUrl, getState, dispatch);
     currentUrl = websocketUrl;
   }
@@ -472,7 +464,6 @@ export function getNodeDetails(getState, dispatch) {
 }
 
 export function getTopologies(getState, dispatch, forceRequest) {
-  console.log(10);
   if (isPausedSelector(getState())) {
     getTopologiesOnce(getState, dispatch);
   } else {
@@ -481,7 +472,6 @@ export function getTopologies(getState, dispatch, forceRequest) {
 }
 
 export function getNodes(getState, dispatch, forceRequest = false) {
-  console.log(2);
   if (isPausedSelector(getState())) {
     getNodesOnce(getState, dispatch);
   } else if (isGraphViewModeSelector(getState()) || isDashboardViewModeSelector(getState()) || isTableViewModeSelector(getState())) {
