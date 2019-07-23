@@ -1847,6 +1847,8 @@ $border-radius-hard: 25px;
 .err-item{
   display: flex; 
   align-content: flex-end;
+  background-color: $color-white;
+  opacity: 1;
 }
 
 .err-bar{
