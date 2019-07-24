@@ -5,6 +5,8 @@
 $color-ashPurple: #b19cd9;
 $color-ashBlue: #99cccc;
 $color-ashRed: 	#DC3545;
+$color-michelle: #295974;
+$color-michelle-light: #298fca;
 
 /* sass-lint:disable variable-for-property */
 @font-face {
@@ -36,6 +38,11 @@ a {
 
 .ModalHeader {
   font-size: $font-size-large;
+}
+
+#tutorialModal {
+  width: 1000px;
+  height: 75%;
 }
 
 .browsehappy {
@@ -231,11 +238,11 @@ a {
 .header {
   // background-color: transparentize($color-purple-25, 0.2);
   z-index: $layer-front;
-  padding: 15px 10px 0;
+  padding: 25px 5px 0;
   position: relative;
   width: 100%;
 
-  background-image: linear-gradient($color-ashPurple, $color-purple-25);
+  background-image: linear-gradient($color-michelle, $color-purple-25);
 
   .selectors {
     display: flex;
@@ -545,7 +552,7 @@ $border-radius-hard: 25px;
   left: 15%;
   top: 20%;
   border-style: solid;
-  border-color: $color-ashPurple;
+  border-color: $color-michelle-light;
   border-width: 5px;
   border-radius: $border-radius-hard;
 }

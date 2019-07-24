@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { searchableFieldsSelector } from '../selectors/search';
 import { canvasMarginsSelector } from '../selectors/canvas';
 import { hideHelp } from '../actions/app-actions';
+import TutorialModal from './tutorial-modal';
 
 
 const GENERAL_SHORTCUTS = [
@@ -165,6 +166,8 @@ function HelpPanel({
       <div className="help-panel" style={{marginTop: canvasMargins.top}}>
         <div className="help-panel-header">
           <h2>Help</h2>
+          <br/>
+          <TutorialModal/>
         </div>
         <div className="help-panel-main">
           {renderShortcutPanel()}
