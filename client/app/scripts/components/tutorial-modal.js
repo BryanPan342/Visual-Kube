@@ -1,9 +1,7 @@
 import React from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle} from 'reactstrap';
+import { Card, CardImg } from 'reactstrap';
 import TutorialCarousel from './tutorial-carousel';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import img1 from './images/figmahierarchy.png';
