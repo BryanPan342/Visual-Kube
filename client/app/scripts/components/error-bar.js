@@ -78,19 +78,12 @@ export class ErrorBar extends React.Component {
     changeVisibility = changeVisibility.bind(this);
   }
 
-  onClickErr(ev, node, nodes) {
-    trackAnalyticsEvent('scope.node.click', {
-      layout: GRAPH_VIEW_MODE,
-      parentTopologyId: nodes.get('parentId'),
-      topologyId: nodes.get('id'),
-    });
+  onClickErr(ev, node) {
     this.props.clickNode(node.id, node.label, ev.target.getBoundingClientRect(), 'pods');
   }
   render() {
     const { isDashboardViewMode } = this.props;
-    var nodes = this.props.current_nodes;
-    var data = formatData(nodes, "pods");
-    console.log(nodes.toJS());
+    var data = this.props.state.get('errorData').toList().toJS();
     setNumErrors(data);
     var allGoodMsg = false;
    if (data.length === 0 && isDashboardViewMode) {
@@ -104,7 +97,7 @@ export class ErrorBar extends React.Component {
           <div>
             {data.map((element) => 
               <Toast >
-                <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element,nodes)} ><ErrorIcon />{element.name}... {element.status}</ToastBody>      
+                <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} ><ErrorIcon />{element.label}... {element.status}</ToastBody>      
               </Toast>
             )}
           </div>
