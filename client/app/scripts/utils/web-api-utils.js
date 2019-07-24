@@ -266,13 +266,9 @@ function getNodesOnce(getState, dispatch, pod = false) {
       dispatch(receiveError(url));
     },
     success: (res) => {
-<<<<<<< HEAD
       if ( pod ) {
         dispatch(getErrors(res.nodes))
       }else if (state.get('viewingNodeId')) {
-=======
-      if (state.get('viewingNodeId')) {
->>>>>>> master
         let _map = {};
         res.node.children[0].nodes.map((x) => {
           _map[x.id] = x;
@@ -373,47 +369,20 @@ function getTopologiesOnce(getState, dispatch) {
   });
 }
 
-<<<<<<< HEAD
-function updateWebsocketChannel(getState, dispatch, forceRequest, topology=undefined) {
-  let topologyUrl;
-  let topologyOptions;
-  let isNewUrl;
-  if (topology) {
-    // Specify web socket url to /containers
-    topologyUrl = `/api/topology/${topology}`;
-  } else {
-    topologyUrl = getCurrentTopologyUrl(getState());
-    // topologyOptions = activeTopologyOptionsSelector(getState());
-    topologyOptions = makeMap();
-  }
-=======
 function updateWebsocketChannel(getState, dispatch, forceRequest) {
   const topologyUrl = getCurrentTopologyUrl(getState());
   const topologyOptions = activeTopologyOptionsSelector(getState());
->>>>>>> master
   const websocketUrl = buildWebsocketUrl(topologyUrl, topologyOptions, getState());
   // Only recreate websocket if url changed or if forced (weave cloud instance reload);
-  if(topology){
-    isNewUrl = websocketUrl !== podUrl;
-  } else {
-    isNewUrl = websocketUrl !== currentUrl;
-  }
+  
+  const isNewUrl = websocketUrl !== currentUrl;
+
 
   // `topologyUrl` can be undefined initially, so only create a socket if it is truthy
   // and no socket exists, or if we get a new url.
   if (topologyUrl && (!socket || isNewUrl || forceRequest)) {
-<<<<<<< HEAD
-    console.log(websocketUrl);
-    createWebsocket(websocketUrl, getState, dispatch, topology);
-    if(topology){
-      podUrl = websocketUrl;
-    }else {
-      currentUrl = websocketUrl;
-    }
-=======
     createWebsocket(websocketUrl, getState, dispatch);
     currentUrl = websocketUrl;
->>>>>>> master
   }
 }
 
