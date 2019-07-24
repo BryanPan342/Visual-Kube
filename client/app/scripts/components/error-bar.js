@@ -10,6 +10,7 @@ import { GRAPH_VIEW_MODE } from '../constants/naming';
 import { trackAnalyticsEvent } from '../utils/tracking-utils';
 import { isDashboardViewModeSelector } from '../selectors/topology'
 
+import { APIcall } from '../utils/web-api-utils';
 import { clickNode } from '../actions/app-actions';
 
 export const ErrorIcon = () => <Icon icon={warning} />;
@@ -24,7 +25,7 @@ export const index_topoById = (topo, data) => {
  return -1;
 }
 
-export const formatData = (nodes, topologyId) => {
+export function formatData(nodes, topologyId){
   var return_data;
   if(topologyId === "pods")
     return_data = [];
@@ -35,19 +36,13 @@ export const formatData = (nodes, topologyId) => {
     return return_data;
 
   var data = nodes.get(topologyId).toList().toJS();
-  var i;
+  let i, currNode, test;
   for(i = 0; i < data.length; i++){
-    if(topologyId === "pods" && data[i].hasOwnProperty("parents") && data[i]['metadata'][0]['value'] === "Running"){
-      // fetch('http://localhost:8000/api/v1/namespaces/default/pods/', {method: 'GET', mode: 'no-cors', 
-      //   headers: {"Access-Control-Allow-Origin": "*", "Content-Type": "application/json"}})
-      // .then(function(response) {
-      //   return response.text().then(function(text){console.log(text); return text ? JSON.parse(text):{}});
-      // })
-      // .then(function(json){
-      //   console.log(json)
-      // })
-
-      return_data[i]={name: data[i]['rank'], status: data[i]['metadata'][0]['value'], id: data[i]['id'], label: data[i]['label']};
+    currNode = data[i]
+    if(topologyId === "pods" && currNode.hasOwnProperty("parents") && currNode['metadata'][0]['value'] !== "Running"){
+      test = APIcall(currNode.metadata[2].value, currNode.id, currNode.label).then(data => {console.log(data); return data;});
+      console.log(test);
+      return_data.push(test);
     }
     else if(topologyId === "hosts" && data[i]['metrics']){
       return_data={cpu: {value: data[i]['metrics'][0]['value'], max: data[i]['metrics'][0]['max']}, memory: {value: data[i]['metrics'][1]['value'], max: data[i]['metrics'][1]['max']}}
@@ -55,6 +50,8 @@ export const formatData = (nodes, topologyId) => {
   }
   return return_data;
 }
+
+
 
 var isVisible = true;
 
@@ -81,25 +78,18 @@ export class ErrorBar extends React.Component {
     changeVisibility = changeVisibility.bind(this);
   }
 
-  onClickErr(ev, node, nodes) {
-    trackAnalyticsEvent('scope.node.click', {
-      layout: GRAPH_VIEW_MODE,
-      parentTopologyId: nodes.get('parentId'),
-      topologyId: nodes.get('id'),
-    });
+  onClickErr(ev, node) {
     this.props.clickNode(node.id, node.label, ev.target.getBoundingClientRect(), 'pods');
   }
   render() {
     const { isDashboardViewMode } = this.props;
-    var nodes = this.props.current_nodes;
-    var data = formatData(nodes, "pods");
+    var data = this.props.state.get('errorData').toList().toJS();
     setNumErrors(data);
     var allGoodMsg = false;
    if (data.length === 0 && isDashboardViewMode) {
     allGoodMsg = true;
    }
-
-   if (isVisible){
+   if (isVisible && data[0] && Array.isArray(data)){
     return (
       <div className='err-bar' >
         { allGoodMsg ? 
@@ -107,7 +97,7 @@ export class ErrorBar extends React.Component {
           <div>
             {data.map((element) => 
               <Toast >
-                <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element,nodes)} ><ErrorIcon />{element.name}... {element.status}</ToastBody>      
+                <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} ><ErrorIcon />{element.label}... {element.status}</ToastBody>      
               </Toast>
             )}
           </div>

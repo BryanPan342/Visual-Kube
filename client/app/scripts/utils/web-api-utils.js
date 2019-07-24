@@ -8,7 +8,7 @@ import {
   receiveApiDetails, receiveNodesDelta, receiveNodeDetails, receiveControlError,
   receiveControlNodeRemoved, receiveControlPipe, receiveControlPipeStatus,
   receiveControlSuccess, receiveTopologies, receiveNotFound,
-  receiveNodesForTopology, receiveNodes,
+  receiveNodesForTopology, receiveNodes, getErrors,
 } from '../actions/app-actions';
 
 import { getCurrentTopologyUrl } from '../utils/topology-utils';
@@ -38,6 +38,7 @@ const csrfToken = (() => {
   return token;
 })();
 
+let podUrl = null
 let socket;
 let reconnectTimer = 0;
 let topologyTimer = 0;
@@ -127,7 +128,7 @@ function buildWebsocketUrl(topologyUrl, topologyOptions = makeMap(), state) {
   return `${getWebsocketUrl()}${topologyUrl}/ws?${optionsQuery}`;
 }
 
-function createWebsocket(websocketUrl, getState, dispatch) {
+function createWebsocket(websocketUrl, getState, dispatch, topology) {
   if (socket) {
     socket.onclose = null;
     socket.onerror = null;
@@ -165,32 +166,9 @@ function createWebsocket(websocketUrl, getState, dispatch) {
     dispatch(receiveError(websocketUrl));
   };
 
-  socket.onmessage = (event) => {  
+  socket.onmessage = (event) => { /*console.log(event.currentTarget.url);*/
     const msg = JSON.parse(event.data);
-    // let updateArray = msg["update"];
-    // console.log(updateArray);
-    // for (let i = 0; i < updateArray.length; i++) {
-    //   if ("parents" in updateArray[i]) {
-    //     for (let j = 0; j < container["parents"])
-    //   }
-    // if ("parents" in container) {
-    //   for (let i = 0; i < container["parents"].length; i++) {
-    //     let topo = getTopoFromId(container["parents"][i]["id"]);
-    //     if (topo == "hosts" || topo == "pods") {
-    //       returnArrayparentMap[container["parents"][i]["id"]] = container["parents"][i];
-    //     }
-    //   }
-    // } else {
-    //   // This property does not have "parents"
-    //   delete returnObject[key]
-    // }
-  // }
-  // Add values of parentMap to returnObject
-  // for (var parent in parentMap) {
-  //   returnObject[parent] = parentMap[parent];
-  // }
-    // console.log(msg);
-    dispatch(receiveNodesDelta(msg));
+    dispatch(receiveNodesDelta(msg, topology));
 
     // profiling (receiveNodesDelta triggers synchronous render)
     if (!firstMessageOnWebsocketAt) {
@@ -260,22 +238,16 @@ export function getTopoFromId(id) {
   return topo;
 }
 
-function getNodesOnce(getState, dispatch) {
+function getNodesOnce(getState, dispatch, pod = false) {
   const state = getState();
   let topologyUrl; 
   let topologyOptions; 
   let optionsQuery; 
   let url; 
-  // if (state.get('topologyViewMode') === "topo" && !state.get('viewingNodeId')) {
-  //   // option 1
-  //   url = `${getApiPath()}/api/topology/containers`;
-  // } else if (state.get('topologyViewMode') === "topo" && state.get('viewingNodeId')) {
-    // if (isGraphViewModeSelector(state) && !state.get('viewingNodeId')) {
-    //   // if viewingNodeId is null, make an API request for what topology is specified in the URL
-    //   // url = `${getApiPath()}/api/topology/hosts`
-      
-    // }
-  if (isGraphViewModeSelector(state) && state.get('viewingNodeId')) {
+
+  if(pod){
+    url = `${getApiPath()}/api/topology/pods?snapshot=hide&storage=hide&pseudo=hide`;
+  } else if (state.get('viewingNodeId')) {
     // option 2
     const viewNodeId = state.get('viewingNodeId');
     const topo = getTopoFromId(viewNodeId);
@@ -286,6 +258,7 @@ function getNodesOnce(getState, dispatch) {
     optionsQuery = buildUrlQuery(topologyOptions, state);
     url = `${getApiPath()}${topologyUrl}?${optionsQuery}`;
   }
+  console.log(url);
   //Either nest doRequests inside each other or use a .then?
   doRequest({
     error: (req) => {
@@ -293,21 +266,28 @@ function getNodesOnce(getState, dispatch) {
       dispatch(receiveError(url));
     },
     success: (res) => {
+<<<<<<< HEAD
+      if ( pod ) {
+        dispatch(getErrors(res.nodes))
+      }else if (state.get('viewingNodeId')) {
+=======
       if (state.get('viewingNodeId')) {
+>>>>>>> master
         let _map = {};
         res.node.children[0].nodes.map((x) => {
           _map[x.id] = x;
         });    
-        dispatch(receiveNodes(_map));
+        dispatch(receiveNodes(_map, pod));
       // } else {
         // dispatch(receiveNodes(findContainerParents(res.nodes)));
       } else {
-        dispatch(receiveNodes(res.nodes));
+        dispatch(receiveNodes(res.nodes, pod));
       }
     },
     url
   })
 }
+
 
 // function findContainerParents(containers) {
 //   let returnObject = containers;
@@ -393,17 +373,47 @@ function getTopologiesOnce(getState, dispatch) {
   });
 }
 
+<<<<<<< HEAD
+function updateWebsocketChannel(getState, dispatch, forceRequest, topology=undefined) {
+  let topologyUrl;
+  let topologyOptions;
+  let isNewUrl;
+  if (topology) {
+    // Specify web socket url to /containers
+    topologyUrl = `/api/topology/${topology}`;
+  } else {
+    topologyUrl = getCurrentTopologyUrl(getState());
+    // topologyOptions = activeTopologyOptionsSelector(getState());
+    topologyOptions = makeMap();
+  }
+=======
 function updateWebsocketChannel(getState, dispatch, forceRequest) {
   const topologyUrl = getCurrentTopologyUrl(getState());
   const topologyOptions = activeTopologyOptionsSelector(getState());
+>>>>>>> master
   const websocketUrl = buildWebsocketUrl(topologyUrl, topologyOptions, getState());
   // Only recreate websocket if url changed or if forced (weave cloud instance reload);
-  const isNewUrl = websocketUrl !== currentUrl;
+  if(topology){
+    isNewUrl = websocketUrl !== podUrl;
+  } else {
+    isNewUrl = websocketUrl !== currentUrl;
+  }
+
   // `topologyUrl` can be undefined initially, so only create a socket if it is truthy
   // and no socket exists, or if we get a new url.
   if (topologyUrl && (!socket || isNewUrl || forceRequest)) {
+<<<<<<< HEAD
+    console.log(websocketUrl);
+    createWebsocket(websocketUrl, getState, dispatch, topology);
+    if(topology){
+      podUrl = websocketUrl;
+    }else {
+      currentUrl = websocketUrl;
+    }
+=======
     createWebsocket(websocketUrl, getState, dispatch);
     currentUrl = websocketUrl;
+>>>>>>> master
   }
 }
 
@@ -466,15 +476,14 @@ export function getTopologies(getState, dispatch, forceRequest) {
   }
 }
 
-export function getNodes(getState, dispatch, forceRequest = false) {
-  if (isPausedSelector(getState())) {
+export function getNodes(getState, dispatch, forceRequest = false, pod =false) {
+  if (isPausedSelector(getState()) || getState().get('viewingNodeId')) {
     getNodesOnce(getState, dispatch);
-  } else if (isGraphViewModeSelector(getState()) || isDashboardViewModeSelector(getState()) || isTableViewModeSelector(getState())) {
-    getNodesOnce(getState, dispatch);
-    updateWebsocketChannel(getState, dispatch, forceRequest);
   } else {
     updateWebsocketChannel(getState, dispatch, forceRequest);
   }
+  if(pod)
+    getNodesOnce(getState, dispatch, pod);
   getNodeDetails(getState, dispatch);
 }
 
@@ -608,5 +617,20 @@ export function teardownWebsockets() {
     socket.close();
     socket = null;
     currentUrl = null;
+    podUrl = null;
   }
+}
+
+export async function APIcall(node_namespace, node_id, node_label){
+  return fetch(`http://localhost:8000/api/v1/namespaces/${node_namespace}/pods/${node_label}`, {method: 'GET', mode: 'cors'})
+    .then( async(response)=>{return await response.json()})
+    .then( async (json)=> {
+      if(json.status.containerStatuses[0].state.waiting)
+        return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: node_label}
+      else
+        return await {status: "ContainerTerminating", id: node_id, label:node_label}
+    });
+  // let json = await response.json();
+  // console.log(3);
+  // return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: node_label};
 }

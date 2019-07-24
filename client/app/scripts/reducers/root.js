@@ -35,6 +35,8 @@ import {
   getDefaultTopology,
 } from '../utils/topology-utils';
 
+import { APIcall } from '../utils/web-api-utils';
+
 const log = debug('scope:app-store');
 const error = debug('scope:error');
 
@@ -45,6 +47,8 @@ const topologySorter = topology => topology.get('rank');
 // Initial values
 
 export const initialState = makeMap({
+  incomingData: makeMap(),
+  errorData: makeMap(),
   viewingNodeId: null,
   capabilities: makeMap(),
   contrastMode: false,
@@ -205,7 +209,7 @@ function updateStateFromNodes(state) {
 
   // Update the nodes cache only if we're not in the resource view mode, as we
   // intentionally want to keep it static before we figure how to keep it up-to-date.
-  if (!isResourceViewModeSelector(state) && !isGraphViewModeSelector(state)) {
+  if (!isResourceViewModeSelector(state) && state.get('viewingNodeId')) {
     const nodesForCurrentTopologyKey = ['nodesByTopology', state.get('currentTopologyId')];
     state = state.setIn(nodesForCurrentTopologyKey, state.get('nodes'));
   }
@@ -542,6 +546,18 @@ export function rootReducer(state = initialState, action) {
       }
       return state;
     }
+    
+    case ActionTypes.CLEAR_ERROR_DATA: {
+      state = state.set('errorData', state.get('incomingData'));
+      state = state.set('incomingData', makeMap());
+      return state;
+    }
+
+    case ActionTypes.RECEIVE_ERROR_DATA: {
+      state = state.setIn(['incomingData', action.node.id], action.node);
+      state = state.set('timeTravelTransitioning', false);
+      return updateStateFromNodes(state);
+    }
 
     case ActionTypes.RECEIVE_NODE_DETAILS: {
       // Ignore the update if paused and the timestamp didn't change.
@@ -582,7 +598,6 @@ export function rootReducer(state = initialState, action) {
       if (state.get('nodesLoaded') && state.get('pausedAt')) {
         return state;
       }
-
       log(
         'RECEIVE_NODES_DELTA',
         'remove', size(action.delta.remove),
@@ -590,14 +605,8 @@ export function rootReducer(state = initialState, action) {
         'add', size(action.delta.add),
         'reset', action.delta.reset
       );
-      let topo;
-      if (isGraphViewModeSelector(state)) {
-        topo = 'pods'
-      } else {
-        topo = 'hosts'
-      }
-      if (isGraphViewModeSelector(state) || isDashboardViewModeSelector(state) || isTableViewModeSelector(state)) {
-
+      let topo = "pods";
+      if (state.get('viewingNodeId')) {
         if (action.delta.reset) {
           state = state.setIn(['nodesByTopology', topo], makeMap());
         }
