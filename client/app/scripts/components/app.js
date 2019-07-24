@@ -205,9 +205,7 @@ class App extends React.Component {
       showingDetails, showingHelp, showingTroubleshootingMenu,
       timeTravelTransitioning, timeTravelSupported, contrastMode, allNodes
     } = this.props;
-
-    // console.log(11);
-    // console.log(allNodes.toList().toJS());
+    
     const className = classNames('scope-app', {
       'contrast-mode': contrastMode,
       'time-travel-open': timeTravelSupported,
