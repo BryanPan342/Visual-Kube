@@ -258,7 +258,6 @@ function getNodesOnce(getState, dispatch, pod = false) {
     optionsQuery = buildUrlQuery(topologyOptions, state);
     url = `${getApiPath()}${topologyUrl}?${optionsQuery}`;
   }
-  console.log(url);
   //Either nest doRequests inside each other or use a .then?
   doRequest({
     error: (req) => {
@@ -598,7 +597,4 @@ export async function APIcall(node_namespace, node_id, node_label){
       else
         return await {status: "Terminating", id: node_id, label:node_label}
     });
-  // let json = await response.json();
-  // console.log(3);
-  // return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: node_label};
 }
