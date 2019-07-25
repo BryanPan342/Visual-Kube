@@ -9,6 +9,7 @@ import {
   receiveControlNodeRemoved, receiveControlPipe, receiveControlPipeStatus,
   receiveControlSuccess, receiveTopologies, receiveNotFound,
   receiveNodesForTopology, receiveNodes,
+  addLabelAndParentsToState
 } from '../actions/app-actions';
 
 import { getCurrentTopologyUrl } from '../utils/topology-utils';
@@ -241,7 +242,7 @@ function getNodesForTopologies(state, dispatch, topologyIds, topologyOptions = m
 }
 
 export function getTopoFromId(id) {
-  let slicedId = id.slice(-5);
+  let slicedId = id.slice(-5); 
   let topo;
   switch (slicedId) {
     case "<pod>":
@@ -260,25 +261,69 @@ export function getTopoFromId(id) {
   return topo;
 }
 
+export function getLabelAndParentsFromId(id, dispatch){
+  const topology = getTopoFromId(id)
+  let url = `${getApiPath()}/api/topology/${topology}/${id}`
+  return doRequest({
+    error: (req) => {
+      log(`Error in nodes request: ${req.responseText}`);
+      dispatch(receiveError(url));
+    },
+    success: (res) => {
+      let label = res.node.label;
+      let nodeId = res.node.id
+      if(res.node.parents){
+      let parents = res.node.parents;
+      dispatch(addLabelAndParentsToState(label, nodeId, parents));
+    }
+    else{
+      dispatch(addLabelAndParentsToState(label, nodeId, ''));
+    }
+    },
+    url
+  })
+}
+
+
+
+// export function getLabelAndParentsFromId(id, callback){
+//   console.log('ITS DONE', callback)
+//   const topology = getTopoFromId(id)
+//   let url = `${getApiPath()}/api/topology/${topology}/${id}`
+//   doRequest({
+//     error: (req) => {
+//       log(`Error in nodes request: ${req.responseText}`);
+//       dispatch(receiveError(url));
+//     },
+//     success: (res) => {
+//       console.log('res.node.label = ', res.node.label)
+//       let label = res.node.label;
+//       if(callback){
+//         console.log('ITS IN THE IF ')
+//         callback(label);
+//       }
+//     },
+//     url
+//   })
+// }
+
+
 function getNodesOnce(getState, dispatch) {
   const state = getState();
-  const topologyUrl = getCurrentTopologyUrl(state);
-  const topologyOptions = activeTopologyOptionsSelector(state);
-  const optionsQuery = buildUrlQuery(topologyOptions, state);
-  let url = `${getApiPath()}${topologyUrl}?${optionsQuery}`;
-  // if (state.get('topologyViewMode') === "topo" && !state.get('viewingNodeId')) {
-  //   // option 1
-  //   url = `${getApiPath()}/api/topology/containers`;
-  // } else if (state.get('topologyViewMode') === "topo" && state.get('viewingNodeId')) {
-    if (isGraphViewModeSelector(state) && !state.get('viewingNodeId')) {
-      // if viewingNodeId is null, make an API request for hosts
-      url = `${getApiPath()}/api/topology/hosts`
-    }
-    if (isGraphViewModeSelector(state) && state.get('viewingNodeId')) {
+  let topologyUrl; 
+  let topologyOptions; 
+  let optionsQuery; 
+  let url; 
+  if (isGraphViewModeSelector(state) && state.get('viewingNodeId')) {
     // option 2
     const viewNodeId = state.get('viewingNodeId');
     const topo = getTopoFromId(viewNodeId);
     url = `${getApiPath()}/api/topology/${topo}/${viewNodeId}`
+  } else {
+    topologyUrl = getCurrentTopologyUrl(state);
+    topologyOptions = activeTopologyOptionsSelector(state);
+    optionsQuery = buildUrlQuery(topologyOptions, state);
+    url = `${getApiPath()}${topologyUrl}?${optionsQuery}`;
   }
   //Either nest doRequests inside each other or use a .then?
   doRequest({
@@ -287,7 +332,6 @@ function getNodesOnce(getState, dispatch) {
       dispatch(receiveError(url));
     },
     success: (res) => {
-      console.log(8);
       if (state.get('viewingNodeId')) {
         let _map = {};
         res.node.children[0].nodes.map((x) => {
@@ -390,24 +434,23 @@ function getTopologiesOnce(getState, dispatch) {
 }
 
 function updateWebsocketChannel(getState, dispatch, forceRequest) {
-  console.log(12);
   let topologyUrl;
   let topologyOptions;
   // if (isGraphViewModeSelector(getState())) {
   //   // Specify web socket url to /containers
   //   topologyUrl = '/api/topology/pods';
   // } else if (isDashboardViewModeSelector(getState())) {
-  if (getState().get('viewingNodeId') === null || isDashboardViewModeSelector(getState())) {
-    topologyUrl = '/api/topology/hosts';
-  } else {
+  
+  // if (getState().get('viewingNodeId') === null || isDashboardViewModeSelector(getState())) {
+  //   topologyUrl = '/api/topology/hosts';
+  // } else {
     topologyUrl = getCurrentTopologyUrl(getState());
-    console.log(topologyUrl);
-    // topologyOptions = activeTopologyOptionsSelector(getState());
-    topologyOptions = makeMap();
-    console.log(topologyOptions);
-  }
+    // console.log(topologyUrl);
+    topologyOptions = activeTopologyOptionsSelector(getState());
+    // topologyOptions = makeMap();
+    // console.log(topologyOptions);
+  // }
   const websocketUrl = buildWebsocketUrl(topologyUrl, topologyOptions, getState());
-  console.log(1);
   console.log(websocketUrl);
   // Only recreate websocket if url changed or if forced (weave cloud instance reload);
   const isNewUrl = websocketUrl !== currentUrl;
@@ -421,6 +464,8 @@ function updateWebsocketChannel(getState, dispatch, forceRequest) {
 }
 
 export function getNodeDetails(getState, dispatch) {
+  // console.log('getState = ', getState)
+  // console.log('dispatch = ', dispatch)
   const state = getState();
   const nodeMap = state.get('nodeDetails');
   const topologyUrlsById = state.get('topologyUrlsById');
@@ -481,7 +526,6 @@ export function getTopologies(getState, dispatch, forceRequest) {
 }
 
 export function getNodes(getState, dispatch, forceRequest = false) {
-  console.log(2);
   if (isPausedSelector(getState())) {
     getNodesOnce(getState, dispatch);
   } else if (isGraphViewModeSelector(getState()) || isDashboardViewModeSelector(getState()) || isTableViewModeSelector(getState())) {

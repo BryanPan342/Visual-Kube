@@ -1,12 +1,14 @@
 import React from 'react';
-import { Jumbotron} from 'reactstrap';
 import NodesChart from '../charts/nodes-chart';
+import Breadcrumb from './breadcrumb'
 
 class NodesJumbotron extends React.Component {
     render() {
     return (
-      <div>
-        <Jumbotron/><NodesChart/>
+      <div id="NodeJumbotron">
+        {/* <h5>Host: Minikube / Pod: AshPod / Container: AshContainer / </h5> */}
+        <Breadcrumb />
+        <NodesChart/>
       </div>
     );
   }

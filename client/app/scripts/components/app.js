@@ -249,19 +249,23 @@ class App extends React.Component {
             </div>
           </div>
 
+<<<<<<< HEAD
           <Breadcrumb />
+=======
+          {/* <Breadcrumb /> */}
+>>>>>>> b3e1c13e6473ed5ce64cf1f9efb68aecd4c69c6c
           {/* <NodeDetailsRelatives /> */}
           {/* <NodeDetailsRelativesLink /> */}
 
           <Nodes />
         
           <div className='err-wrapper'>
-            {isGraphViewMode && <ErrorBar />}
+            {isGraphViewMode && this.props.nodesLoaded && <ErrorBar />}
             {/* {showingNetworkSelector && isGraphViewMode && <ErrorBar />} */}
             {/* {isGraphViewMode && <ErrorBar />} */}
           </div>
           
-          {isGraphViewMode && <ErrorToggle /> }
+          {isGraphViewMode && this.props.nodesLoaded && <ErrorToggle /> }
 
           {/* <Sidebar classNames={isTableViewMode ? 'sidebar-gridmode' : ''}>
             
@@ -297,7 +301,8 @@ function mapStateToProps(state) {
     timeTravelSupported: timeTravelSupportedSelector(state),
     timeTravelTransitioning: state.get('timeTravelTransitioning'),
     topologyViewMode: state.get('topologyViewMode'),
-    urlState: getUrlState(state)
+    urlState: getUrlState(state),
+    // nodesLoaded: nodesLoadedSelector(state)
   };
 }
 

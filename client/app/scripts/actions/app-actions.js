@@ -17,7 +17,8 @@ import {
   getNodes,
   buildUrlQuery,
   doRequest,
-  getApiPath
+  getApiPath,
+  getLabelAndParentsFromId
 } from '../utils/web-api-utils';
 import { isPausedSelector } from '../selectors/time-travel';
 import {
@@ -351,7 +352,7 @@ export function clickNode(nodeId, label, origin, topologyId = null) {
       label,
       nodeId,
       origin,
-      topologyId,
+      topologyId, 
       type: ActionTypes.CLICK_NODE,
     });
     updateRoute(getState);
@@ -409,6 +410,7 @@ export function clickShowTopologyForNode(topologyId, nodeId) {
       topologyId,
       type: ActionTypes.CLICK_SHOW_TOPOLOGY_FOR_NODE
     });
+    getLabelAndParentsFromId(nodeId, dispatch);
     updateTopology(dispatch, getState);
   };
 }
@@ -820,4 +822,12 @@ export function setStoreViewState(storeViewState) {
     storeViewState,
     type: ActionTypes.SET_STORE_VIEW_STATE
   };
+}
+
+// function added for getLabelAndParentsFromId
+export function addLabelAndParentsToState(label, nodeId, parents){
+  return {
+    breadcrumb: [label, nodeId,parents],
+    type: ActionTypes.UPDATE_BREADCRUMB
+    }
 }

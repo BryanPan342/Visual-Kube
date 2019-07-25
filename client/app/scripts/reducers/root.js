@@ -45,6 +45,7 @@ const topologySorter = topology => topology.get('rank');
 // Initial values
 
 export const initialState = makeMap({
+  breadcrumb: [],
   viewingNodeId: null,
   capabilities: makeMap(),
   contrastMode: false,
@@ -266,7 +267,6 @@ export function rootReducer(state = initialState, action) {
     }
 
     case ActionTypes.SET_VIEW_MODE: {
-      console.log(3);
       // state = state.set('viewingNodeId', null);
       // possibly only do the below line if in table view
       // state = state.set('nodes', makeMap());     
@@ -307,7 +307,6 @@ export function rootReducer(state = initialState, action) {
     case ActionTypes.CLICK_NODE: {
       const prevSelectedNodeId = state.get('selectedNodeId');
       const prevDetailsStackSize = state.get('nodeDetails').size;
-
       // click on sibling closes all
       state = closeAllNodeDetails(state);
       // select new node if it's not the same (in that case just delesect)
@@ -366,9 +365,14 @@ export function rootReducer(state = initialState, action) {
       return state;
     }
 
+    case ActionTypes.UPDATE_BREADCRUMB: {
+      state = state.set('breadcrumb', action.breadcrumb);
+      return state
+    }
+
     case ActionTypes.CLICK_TOPOLOGY: {
       state = closeAllNodeDetails(state);
-
+      state = state.set('viewingNodeId', null);
       const currentTopologyId = state.get('currentTopologyId');
       if (action.topologyId !== currentTopologyId) {
         state = setTopology(state, action.topologyId);
