@@ -42,23 +42,27 @@ class NodeContainer extends React.Component {
     if (ashShapeString === 'circle')
     {
       ashColorCode = 1;
-      changeColor("jumboColor1");
+      if (this.props.viewingNodeId) 
+        {changeColor("jumboColor1");}
 
     }
     else if (ashShapeString === 'heptagon')
     {
       ashColorCode = 2;
-      changeColor("jumboColor2");
+      if (this.props.viewingNodeId) 
+        {changeColor("jumboColor2");}
     }
     else if (ashShapeString === 'hexagon')
     {
       ashColorCode = 3;
-      changeColor("jumboColor3");
+      if (this.props.viewingNodeId) 
+        {changeColor("jumboColor3");}
     }
     else if (ashShapeString === 'square')
     {
       ashColorCode = 4;
-      changeColor("jumboColor4");
+      if (this.props.viewingNodeId) 
+        {changeColor("jumboColor4");}
     }
 
     ashShapeString = 'visualkube';
@@ -182,6 +186,7 @@ function mapStateToProps(state) {
     searchTerms: [state.get('searchQuery')],
     showingNetworks: state.get('showingNetworks'),
     nodeDetails: state.get('nodeDetails'),
+    viewingNodeId: state.get("viewingNodeId"),
   };
 }
 

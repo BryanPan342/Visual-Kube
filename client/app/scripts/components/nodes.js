@@ -74,7 +74,7 @@ class Nodes extends React.Component {
         {topologiesLoaded && nodesLoaded && this.renderConditionalEmptyTopologyError()}
 
         {/* {isGraphViewMode && <NodesChart />} */}
-        {isGraphViewMode && nodesLoaded && <NodesJumbotron/>}
+        {isGraphViewMode && nodesLoaded && this.props.viewingNodeId ? <NodesJumbotron/> : <NodesChart />}
         {isTableViewMode && <NodesGrid />}
         {isResourceViewMode && <NodesResources />}
         {nodesLoaded && isDashboardViewMode && <Dashboard />}
@@ -96,6 +96,7 @@ function mapStateToProps(state) {
     topologies: state.get('topologies'),
     topologiesLoaded: state.get('topologiesLoaded'),
     topologyNodeCountZero: isTopologyNodeCountZero(state),
+    viewingNodeId: state.get("viewingNodeId"),
   };
 }
 
