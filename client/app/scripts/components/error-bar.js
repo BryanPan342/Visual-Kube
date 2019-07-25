@@ -74,26 +74,10 @@ export class ErrorBar extends React.Component {
     }
   }
 
-  // changeVisibility = () => {
-  //   console.log(2);
-  //   isVisible = !isVisible;
-  //   this.forceUpdate();
-  // }
-
   getNumErrors = () => {
     return numErrors;
   }
 
-  // static getDerivedStateFromProps(prevProps, nextState) {
-  //   console.log(prevProps);
-  //   console.log(nextState);
-  //   if (prevProps && nextState && prevProps.data.length > nextState.data.length) {
-  //     return {
-  //       newError: true
-  //     }
-  //   }
-  //   return null;
-  // }
   componentDidUpdate(prevProps) {
     if (this.props.data.length > prevProps.data.length) {
       this.setState({
@@ -108,7 +92,6 @@ export class ErrorBar extends React.Component {
       isToggleOn: !this.state.isToggleOn
     })
 
-    // this.changeVisibility();
   }
 
   onClickErr(ev, node) {

@@ -445,7 +445,6 @@ export function getTopologies(getState, dispatch, forceRequest) {
 }
 
 export function getNodes(getState, dispatch, forceRequest = false, pod =false) {
-  console.log(3);
   if (isPausedSelector(getState()) || getState().get('viewingNodeId')) {
     getNodesOnce(getState, dispatch);
   } else {
@@ -599,7 +598,4 @@ export async function APIcall(node_namespace, node_id, node_label){
       else
         return await {status: "ContainerTerminating", id: node_id, label:node_label}
     });
-  // let json = await response.json();
-  // console.log(3);
-  // return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: node_label};
 }
