@@ -26,7 +26,6 @@ var nodeColorString = "rgba(0,0,0,0)";
 
 export function setNodeColor(colorString){
   nodeColorString = colorString;
-  console.log(nodeColorString);
 }
 
 const log = debug('scope:node-details');
