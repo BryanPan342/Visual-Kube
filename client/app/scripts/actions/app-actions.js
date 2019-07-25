@@ -1,6 +1,5 @@
 import debug from 'debug';
 import { fromJS } from 'immutable';
-import { Map as makeMap } from 'immutable';
 
 import ActionTypes from '../constants/action-types';
 import { saveGraph } from '../utils/file-utils';
@@ -19,6 +18,7 @@ import {
   doRequest,
   getApiPath,
   APIcall,
+  getTopoFromId,
 } from '../utils/web-api-utils';
 import { isPausedSelector } from '../selectors/time-travel';
 import {
@@ -590,15 +590,28 @@ export function getErrors(nodes){
 }
 
 function getIncoming(nodes){
+  var parents = new Map();
   return(dispatch) => {
     dispatch(clearErrorData());
     for( var i in nodes){
       if(nodes[i]['metadata'][0]['value'] !== "Running") {
-        APIcall(nodes[i].metadata[2].value, nodes[i].id, nodes[i].label)
+        APIcall(nodes[i].rank, nodes[i].id)
         .then(response=>{dispatch(receiveErrorData(response));});
+        for(var j in nodes[i].parents){
+          if(getTopoFromId(nodes[i].parents[j].id)){
+            parents.set(nodes[i].parents[j].id,true);
+          }
+        }
       }
     }
-  }
+    dispatch(updateParents(parents));
+  } 
+}
+function updateParents(parents){
+  return{
+    parents,
+    type:ActionTypes.ADD_PARENTS,
+  };
 }
 
 function clearErrorData(){

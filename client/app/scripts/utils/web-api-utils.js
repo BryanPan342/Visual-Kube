@@ -226,8 +226,11 @@ export function getTopoFromId(id) {
     case "iner>":
       topo = "containers";
       break;
-    default:
+    case "cess>":
       topo = "processes";
+      break;
+    default:
+      topo = "";
       break;
   }
   return topo;
@@ -562,14 +565,18 @@ export function teardownWebsockets() {
   }
 }
 
-export async function APIcall(node_namespace, node_id, node_label){
-  return fetch(`http://localhost:8000/api/v1/namespaces/${node_namespace}/pods/${node_label}`, {method: 'GET', mode: 'cors'})
+export async function APIcall(node_rank, node_id){
+  var arr = node_rank.split("/");
+  return fetch(`http://localhost:8000/api/v1/namespaces/${arr[0]}/pods/${arr[1]}`, {method: 'GET', mode: 'cors'})
     .then( async(response)=>{return await response.json()})
     .then( async (json)=> {
-      if(json.status.containerStatuses[0].state.waiting)
-        return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: node_label}
-      else
-        return await {status: "ContainerTerminating", id: node_id, label:node_label}
+      for(var i in json.status.containerStatuses)
+      {
+        if(json.status.containerStatuses[i].state.waiting)
+          return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: json.status.containerStatuses[i].name}
+        else
+          return await {status: "ContainerTerminating", id: node_id, label:node_label}
+      }
     });
   // let json = await response.json();
   // console.log(3);

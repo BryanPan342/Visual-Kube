@@ -232,7 +232,7 @@ class NodesChartElements extends React.Component {
       .map(this.nodeMetricDecorator)
       .map(this.nodeScaleDecorator)
       .groupBy(this.nodeDisplayLayer);
-    const edges = this.props.layoutEdges.toIndexedSeq()
+      const edges = this.props.layoutEdges.toIndexedSeq()
       .map(this.edgeHighlightedDecorator)
       .map(this.edgeFocusedDecorator)
       .map(this.edgeBlurredDecorator)

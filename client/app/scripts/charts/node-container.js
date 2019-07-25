@@ -63,6 +63,8 @@ class NodeContainer extends React.Component {
   {
     if(this.props.error)
       return rgb(255,0 ,0);
+    else if(this.props.parentErrors.has(this.props.id))
+      return rgb(255,165,0);
     else
       return rgb(177, 156, 217);
   }
@@ -128,6 +130,7 @@ class NodeContainer extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    parentErrors: state.get('errorParents'),
     contrastMode: state.get('contrastMode'),
     currentTopology: state.get('currentTopology'),
     exportingGraph: state.get('exportingGraph'),
