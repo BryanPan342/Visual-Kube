@@ -16,7 +16,8 @@ import { GRAPH_VIEW_MODE } from '../constants/naming';
 import NodeNetworksOverlay from './node-networks-overlay';
 import { rgb } from 'polished';
 
-import { ashGetGraphWidth } from './nodes-layout';
+import { changeColor } from '../components/nodes-jumbotron';
+import { setNodeColor } from '../components/node-details';
 
 var ashColorCode = 0;
 
@@ -41,18 +42,23 @@ class NodeContainer extends React.Component {
     if (ashShapeString === 'circle')
     {
       ashColorCode = 1;
+      changeColor("jumboColor1");
+
     }
     else if (ashShapeString === 'heptagon')
     {
       ashColorCode = 2;
+      changeColor("jumboColor2");
     }
     else if (ashShapeString === 'hexagon')
     {
       ashColorCode = 3;
+      changeColor("jumboColor3");
     }
     else if (ashShapeString === 'square')
     {
       ashColorCode = 4;
+      changeColor("jumboColor4");
     }
 
     ashShapeString = 'visualkube';
@@ -61,27 +67,30 @@ class NodeContainer extends React.Component {
 
   ashColor(rank, label, pseudo)
   {
-    // if (ashColorCode === 1)
-    // {
-    //   return rgb(112, 234, 251);
-    // }
-    // else if (ashColorCode === 2)
-    // {
-    //   return rgb(135, 245, 153);
-    // }
-    // else if (ashColorCode === 3)
-    // {
-    //   return rgb(173, 206, 255);
-    // }
-    // else if (ashColorCode === 4)
-    // {
-    //   return rgb(151, 255, 205);
-    // }
-    // else {
-    //   return rgb(0,0,0);
-    // }
+    if (ashColorCode === 1)
+    {
+      setNodeColor("rgba(50, 7, 172, 0.7)");
+      return rgb(50, 7, 172);
+    }
+    else if (ashColorCode === 2)
+    {
+      setNodeColor("rgb(71, 88, 239)");
+      return rgb(71, 88, 239);
+    }
+    else if (ashColorCode === 3)
+    {
+      setNodeColor("rgb(7, 182, 220)");
+      return rgb(7, 182, 220);
+    }
+    else if (ashColorCode === 4)
+    {
+      setNodeColor("rgb(82, 214, 214)");
+      return rgb(82, 214, 214);
+    }
+    else {
+      return rgb(0,0,0);
+    }
 
-    return rgb(177, 156, 217); 
   }
 
   ashMetric(metricFormattedValue)

@@ -4,7 +4,7 @@ import { Card, CardImg } from 'reactstrap';
 import TutorialCarousel from './tutorial-carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import img1 from './images/figmahierarchy.png';
+import img1 from './images/describedfigmahierarchy.png';
 
 class TutorialModal extends React.Component {
     constructor(props) {
@@ -26,9 +26,9 @@ class TutorialModal extends React.Component {
       return (
         <div>
           <Button color="primary" onClick={this.toggle}>{this.props.buttonLabel}Tutorial</Button>
-          <Modal id="tutorialModal" isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+          <Modal id="AshModal" isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
             <ModalHeader toggle={this.toggle}>Tutorial</ModalHeader>
-            <ModalBody id="tutorialModalBody">
+            <ModalBody>
             <Card>
               <CardImg top width="100%" src={img1} alt="Stuff should be here" />
             </Card>

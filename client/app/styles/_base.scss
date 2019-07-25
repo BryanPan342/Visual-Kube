@@ -40,9 +40,19 @@ a {
   font-size: $font-size-large;
 }
 
-#tutorialModal {
-  width: 1000px;
-  height: 75%;
+.modal-header {
+  background-color: $color-michelle-light;
+  padding:16px 16px;
+  color:$color-white;
+  border-bottom:2px dashed $color-michelle-light;
+}
+
+#AshModal {
+  position: absolute;
+  left: 5%;
+  top: 1%;
+  min-width: 90%;
+  min-height: 1000px;
 }
 
 .browsehappy {
@@ -552,10 +562,32 @@ $border-radius-hard: 25px;
   left: 15%;
   top: 20%;
   border-style: solid;
-  border-color: $color-michelle-light;
+
   border-width: 5px;
   border-radius: $border-radius-hard;
 }
+
+$jumboColor1: rgba(0, 0, 0, 0.7);
+$jumboColor2: rgba(50, 7, 172, 0.7);
+$jumboColor3: rgba(71, 88, 239, 0.7);
+$jumboColor4: rgba(7, 182, 220, 0.7);
+
+.jumboColor1 {
+  border-color: $jumboColor1;
+}
+
+.jumboColor2 {
+  border-color: $jumboColor2;
+}
+
+.jumboColor3 {
+  border-color: $jumboColor3;
+}
+
+.jumboColor4 {
+  border-color: $jumboColor4;
+}
+
 
 .node-details {
   height: 100%;
