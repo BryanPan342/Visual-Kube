@@ -17,7 +17,8 @@ import {
   getNodes,
   buildUrlQuery,
   doRequest,
-  getApiPath
+  getApiPath,
+  APIcall,
 } from '../utils/web-api-utils';
 import { isPausedSelector } from '../selectors/time-travel';
 import {
@@ -530,7 +531,7 @@ export function receiveNodeDetails(details, requestTimestamp) {
   };
 }
 
-export function receiveNodesDelta(delta) {
+export function receiveNodesDelta(delta, topology) {
   return (dispatch, getState) => {
     if (!isPausedSelector(getState())) {
       // Allow css-animation to run smoothly by scheduling it to run on the
@@ -582,11 +583,42 @@ export function receiveAllNodes() {
   }
 }
 
-export function receiveNodes(nodes) {
-  return {
-    nodes,
-    type: ActionTypes.RECEIVE_NODES,
+export function getErrors(nodes){
+  return (dispatch) => {
+    dispatch(getIncoming(nodes));
+  }
+}
+
+function getIncoming(nodes){
+  return(dispatch) => {
+    dispatch(clearErrorData());
+    for( var i in nodes){
+      if(nodes[i]['metadata'][0]['value'] !== "Running") {
+        APIcall(nodes[i].metadata[2].value, nodes[i].id, nodes[i].label)
+        .then(response=>{dispatch(receiveErrorData(response));});
+      }
+    }
+  }
+}
+
+function clearErrorData(){
+  return{
+    type: ActionTypes.CLEAR_ERROR_DATA
   };
+}
+
+export function receiveErrorData(node){
+  return {
+    node: node,
+    type: ActionTypes.RECEIVE_ERROR_DATA,
+  };
+}
+
+export function receiveNodes(nodes) {
+    return { 
+    nodes: nodes, 
+    type: ActionTypes.RECEIVE_NODES, };
+
 }
 
 export function jumpToTime(timestamp) {
@@ -624,7 +656,7 @@ export function receiveTopologies(topologies) {
       topologies,
       type: ActionTypes.RECEIVE_TOPOLOGIES
     });
-    getNodes(getState, dispatch);
+    getNodes(getState, dispatch, false, true);
     // Populate search matches on first load
     const state = getState();
     // Fetch all the relevant nodes once on first load
@@ -769,7 +801,7 @@ export function route(urlState) {
     }
     // update all request workers with new options
     getTopologies(getState, dispatch);
-    getNodes(getState, dispatch);
+    getNodes(getState, dispatch, false, true);
     // If we are landing on the resource view page, we need to fetch not only all the
     // nodes for the current topology, but also the nodes of all the topologies that make
     // the layers in the resource view.
