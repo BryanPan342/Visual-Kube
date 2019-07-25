@@ -376,7 +376,6 @@ function updateWebsocketChannel(getState, dispatch, forceRequest) {
   
   const isNewUrl = websocketUrl !== currentUrl;
 
-
   // `topologyUrl` can be undefined initially, so only create a socket if it is truthy
   // and no socket exists, or if we get a new url.
   if (topologyUrl && (!socket || isNewUrl || forceRequest)) {
@@ -596,6 +595,6 @@ export async function APIcall(node_namespace, node_id, node_label){
       if(json.status.containerStatuses[0].state.waiting)
         return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: node_label}
       else
-        return await {status: "ContainerTerminating", id: node_id, label:node_label}
+        return await {status: "Terminating", id: node_id, label:node_label}
     });
 }
