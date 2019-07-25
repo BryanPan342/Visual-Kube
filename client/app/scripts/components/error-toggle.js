@@ -1,30 +1,36 @@
 import React from 'react';
 import { Badge, Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {changeVisibility, getNumErrors} from './error-bar';
 
 export default class ErrorToggle extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {isToggleOn: true};
+        // this.state = {isToggleOn: true};
 
         // This binding is necessary to make `this` work in the callback
-        this.handleClick = this.handleClick.bind(this);
+        // this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick() {
-        this.setState(state => (
-            {isToggleOn: !state.isToggleOn}
-        ));
+    // handleClick() {
+    //     this.setState(state => (
+    //         {isToggleOn: !state.isToggleOn}
+    //     ));
 
-        changeVisibility();
-    }
+    //     this.props.changeVisibility();
+    // }
 
   render() {
+    let style = 'err-toggle ';
+    if (this.props.newError) {
+      style = style.concat('err-new-err');
+    } else {
+      style = style.concat('err-no-new-err');
+    }
+    
     return (
       <div>
-        <Button onClick={this.handleClick} className={(this.state.isToggleOn && getNumErrors() > 0) ? 'err-toggle err-toggle-open' : 'err-toggle err-toggle-closed'} color="danger" outline>
-          <Badge color="danger">{getNumErrors()}</Badge> Alerts 
+        <Button onClick={this.props.onClick} className={style} color="danger" outline>
+          <Badge color="danger">{this.props.getNumErrors()}</Badge> Alerts 
         </Button>
       </div>
     );

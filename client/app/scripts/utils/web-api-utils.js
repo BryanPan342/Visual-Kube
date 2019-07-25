@@ -258,7 +258,6 @@ function getNodesOnce(getState, dispatch, pod = false) {
     optionsQuery = buildUrlQuery(topologyOptions, state);
     url = `${getApiPath()}${topologyUrl}?${optionsQuery}`;
   }
-  console.log(url);
   //Either nest doRequests inside each other or use a .then?
   doRequest({
     error: (req) => {
@@ -446,6 +445,7 @@ export function getTopologies(getState, dispatch, forceRequest) {
 }
 
 export function getNodes(getState, dispatch, forceRequest = false, pod =false) {
+  console.log(3);
   if (isPausedSelector(getState()) || getState().get('viewingNodeId')) {
     getNodesOnce(getState, dispatch);
   } else {

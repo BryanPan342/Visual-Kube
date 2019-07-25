@@ -253,7 +253,7 @@ class App extends React.Component {
             {/* {isGraphViewMode && <ErrorBar />} */}
           </div>
           
-          {isGraphViewMode && this.props.nodesLoaded && <ErrorToggle /> }
+          {/* {isGraphViewMode && this.props.nodesLoaded && <ErrorToggle /> } */}
 
           {/* <Sidebar classNames={isTableViewMode ? 'sidebar-gridmode' : ''}>
             
