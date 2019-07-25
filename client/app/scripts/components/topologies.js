@@ -21,7 +21,6 @@ function basicTopologyInfo(topology, searchMatchCount) {
 
 class Topologies extends React.Component {
   onTopologyClick = (ev, topology) => {
-    console.log(11);
     ev.preventDefault();
     trackAnalyticsEvent('scope.topology.selector.click', {
       parentTopologyId: topology.get('parentId'),

@@ -531,7 +531,7 @@ export function receiveNodeDetails(details, requestTimestamp) {
   };
 }
 
-export function receiveNodesDelta(delta, topology) {
+export function receiveNodesDelta(delta) {
   return (dispatch, getState) => {
     if (!isPausedSelector(getState())) {
       // Allow css-animation to run smoothly by scheduling it to run on the
