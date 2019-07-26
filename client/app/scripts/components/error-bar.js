@@ -122,7 +122,7 @@ export class ErrorBar extends React.Component {
             <div>
               {data.map((element) => 
                 <Toast >
-                  <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} ><ErrorIcon />{element.label}... {element.status}</ToastBody>      
+                  <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} ><ErrorIcon />Container: {element.label} => {element.status}</ToastBody>      
                 </Toast>
               )}
             </div> : 

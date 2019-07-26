@@ -47,6 +47,7 @@ const topologySorter = topology => topology.get('rank');
 // Initial values
 
 export const initialState = makeMap({
+  errorParents: makeMap(),
   incomingData: makeMap(),
   errorData: makeMap(),
   viewingNodeId: null,
@@ -544,6 +545,11 @@ export function rootReducer(state = initialState, action) {
       if (state.get('errorUrl') !== null) {
         state = state.set('errorUrl', action.errorUrl);
       }
+      return state;
+    }
+
+    case ActionTypes.ADD_PARENTS: {
+      state = state.set('errorParents', action.parents);
       return state;
     }
     
