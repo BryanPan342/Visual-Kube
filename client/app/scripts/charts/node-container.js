@@ -83,7 +83,6 @@ class NodeContainer extends React.Component {
       setNodeColor("rgba(255,165,0,0.7)");
       return rgb(255,165,0);
     }
-
     if (ashColorCode === 1)
     {
       setNodeColor("rgba(50, 7, 172, 0.7)");
