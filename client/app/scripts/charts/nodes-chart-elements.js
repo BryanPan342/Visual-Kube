@@ -155,6 +155,7 @@ class NodesChartElements extends React.Component {
     const shape = node.get('shape') === 'storagesheet' ? 'sheet' : node.get('shape');
     return (
       <NodeContainer
+        error = {node.get('shape') === 'heptagon' && node.get('metadata') && node.get('metadata').get(0).get('value') !== "Running"}
         matches={node.get('matches')}
         networks={node.get('networks')}
         metric={node.get('metric')}
@@ -231,8 +232,7 @@ class NodesChartElements extends React.Component {
       .map(this.nodeMetricDecorator)
       .map(this.nodeScaleDecorator)
       .groupBy(this.nodeDisplayLayer);
-
-    const edges = this.props.layoutEdges.toIndexedSeq()
+      const edges = this.props.layoutEdges.toIndexedSeq()
       .map(this.edgeHighlightedDecorator)
       .map(this.edgeFocusedDecorator)
       .map(this.edgeBlurredDecorator)

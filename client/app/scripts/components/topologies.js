@@ -6,7 +6,6 @@ import { trackAnalyticsEvent } from '../utils/tracking-utils';
 import { searchMatchCountByTopologySelector } from '../selectors/search';
 import { isResourceViewModeSelector } from '../selectors/topology';
 import { clickTopology } from '../actions/app-actions';
-import { getTopoFromId } from '../utils/web-api-utils';
 
 
 function basicTopologyInfo(topology, searchMatchCount) {

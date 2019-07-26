@@ -207,9 +207,7 @@ class App extends React.Component {
       showingDetails, showingHelp, showingTroubleshootingMenu,
       timeTravelTransitioning, timeTravelSupported, contrastMode, allNodes
     } = this.props;
-
-    // console.log(11);
-    // console.log(allNodes.toList().toJS());
+    
     const className = classNames('scope-app', {
       'contrast-mode': contrastMode,
       'time-travel-open': timeTravelSupported,
@@ -242,18 +240,19 @@ class App extends React.Component {
               <div style={{}}>
                 <Search />
               </div>
-              <FilterModal />
+              <FilterModal 
+                isTableViewMode={this.props.isTableViewMode}
+                isGraphViewMode={this.props.isGraphViewMode}
+                isResourceViewMode={this.props.isResourceViewMode}
+                showingNetworkSelector={this.props.showingNetworkSelector}
+              />
               { !isDashboardViewMode && <Topologies /> }
               <ViewModeSelector />
               <TimeControl />
             </div>
           </div>
 
-<<<<<<< HEAD
           <Breadcrumb />
-=======
-          {/* <Breadcrumb /> */}
->>>>>>> b3e1c13e6473ed5ce64cf1f9efb68aecd4c69c6c
           {/* <NodeDetailsRelatives /> */}
           {/* <NodeDetailsRelativesLink /> */}
 
@@ -265,7 +264,7 @@ class App extends React.Component {
             {/* {isGraphViewMode && <ErrorBar />} */}
           </div>
           
-          {isGraphViewMode && this.props.nodesLoaded && <ErrorToggle /> }
+          {/* {isGraphViewMode && this.props.nodesLoaded && <ErrorToggle /> } */}
 
           {/* <Sidebar classNames={isTableViewMode ? 'sidebar-gridmode' : ''}>
             

@@ -1,6 +1,5 @@
 import debug from 'debug';
 import { fromJS } from 'immutable';
-import { Map as makeMap } from 'immutable';
 
 import ActionTypes from '../constants/action-types';
 import { saveGraph } from '../utils/file-utils';
@@ -18,7 +17,7 @@ import {
   buildUrlQuery,
   doRequest,
   getApiPath,
-  getLabelAndParentsFromId
+  APIcall,
 } from '../utils/web-api-utils';
 import { isPausedSelector } from '../selectors/time-travel';
 import {
@@ -577,11 +576,63 @@ export function resumeTime() {
   };
 }
 
-export function receiveNodes(nodes) {
-  return {
-    nodes,
-    type: ActionTypes.RECEIVE_NODES,
+export function receiveAllNodes() {
+  return (dispatch, getState) => {
+    getAllNodes(getState(), dispatch);
+    const nodes = getState().get('nodesByTopology');
+    dispatch(receiveNodes(nodes));
+  }
+}
+
+export function getErrors(nodes){
+  return (dispatch) => {
+    dispatch(getIncoming(nodes));
+  }
+}
+
+function getIncoming(nodes){
+  var parents = new Map();
+  return(dispatch) => {
+    dispatch(clearErrorData());
+    for( var i in nodes){
+      if(nodes[i]['metadata'][0]['value'] !== "Running") {
+        APIcall(nodes[i].rank, nodes[i].id)
+        .then(response=>{dispatch(receiveErrorData(response));});
+        for(var j in nodes[i].parents){
+          if(getTopoFromId(nodes[i].parents[j].id)){
+            parents.set(nodes[i].parents[j].id,true);
+          }
+        }
+      }
+    }
+    dispatch(updateParents(parents));
+  } 
+}
+function updateParents(parents){
+  return{
+    parents,
+    type:ActionTypes.ADD_PARENTS,
   };
+}
+
+function clearErrorData(){
+  return{
+    type: ActionTypes.CLEAR_ERROR_DATA
+  };
+}
+
+export function receiveErrorData(node){
+  return {
+    node: node,
+    type: ActionTypes.RECEIVE_ERROR_DATA,
+  };
+}
+
+export function receiveNodes(nodes) {
+    return { 
+    nodes: nodes, 
+    type: ActionTypes.RECEIVE_NODES, };
+
 }
 
 export function jumpToTime(timestamp) {
@@ -619,7 +670,7 @@ export function receiveTopologies(topologies) {
       topologies,
       type: ActionTypes.RECEIVE_TOPOLOGIES
     });
-    getNodes(getState, dispatch);
+    getNodes(getState, dispatch, false, true);
     // Populate search matches on first load
     const state = getState();
     // Fetch all the relevant nodes once on first load
@@ -764,7 +815,7 @@ export function route(urlState) {
     }
     // update all request workers with new options
     getTopologies(getState, dispatch);
-    getNodes(getState, dispatch);
+    getNodes(getState, dispatch, false, true);
     // If we are landing on the resource view page, we need to fetch not only all the
     // nodes for the current topology, but also the nodes of all the topologies that make
     // the layers in the resource view.

@@ -10,7 +10,10 @@ import { GRAPH_VIEW_MODE } from '../constants/naming';
 import { trackAnalyticsEvent } from '../utils/tracking-utils';
 import { isDashboardViewModeSelector } from '../selectors/topology'
 
+import { APIcall } from '../utils/web-api-utils';
 import { clickNode } from '../actions/app-actions';
+
+import ErrorToggle from './error-toggle';
 
 export const ErrorIcon = () => <Icon icon={warning} />;
 
@@ -24,7 +27,7 @@ export const index_topoById = (topo, data) => {
  return -1;
 }
 
-export const formatData = (nodes, topologyId) => {
+export function formatData(nodes, topologyId){
   var return_data;
   if(topologyId === "pods")
     return_data = [];
@@ -35,19 +38,13 @@ export const formatData = (nodes, topologyId) => {
     return return_data;
 
   var data = nodes.get(topologyId).toList().toJS();
-  var i;
+  let i, currNode, test;
   for(i = 0; i < data.length; i++){
-    if(topologyId === "pods" && data[i].hasOwnProperty("parents") && data[i]['metadata'][0]['value'] === "Running"){
-      // fetch('http://localhost:8000/api/v1/namespaces/default/pods/', {method: 'GET', mode: 'no-cors', 
-      //   headers: {"Access-Control-Allow-Origin": "*", "Content-Type": "application/json"}})
-      // .then(function(response) {
-      //   return response.text().then(function(text){console.log(text); return text ? JSON.parse(text):{}});
-      // })
-      // .then(function(json){
-      //   console.log(json)
-      // })
-
-      return_data[i]={name: data[i]['rank'], status: data[i]['metadata'][0]['value'], id: data[i]['id'], label: data[i]['label']};
+    currNode = data[i]
+    if(topologyId === "pods" && currNode.hasOwnProperty("parents") && currNode['metadata'][0]['value'] !== "Running"){
+      test = APIcall(currNode.metadata[2].value, currNode.id, currNode.label).then(data => {console.log(data); return data;});
+      console.log(test);
+      return_data.push(test);
     }
     else if(topologyId === "hosts" && data[i]['metrics']){
       return_data={cpu: {value: data[i]['metrics'][0]['value'], max: data[i]['metrics'][0]['max']}, memory: {value: data[i]['metrics'][1]['value'], max: data[i]['metrics'][1]['max']}}
@@ -56,12 +53,9 @@ export const formatData = (nodes, topologyId) => {
   return return_data;
 }
 
-var isVisible = true;
 
-export function changeVisibility(){
-  isVisible = !isVisible;
-  this.forceUpdate();
-}
+
+var isVisible = true;
 
 var numErrors = 0;
 
@@ -69,50 +63,73 @@ export function setNumErrors(nodes) {
   numErrors = nodes.length;
 }
 
-export function getNumErrors() {
-  return numErrors;
-}
-
 export class ErrorBar extends React.Component {
   constructor(props){
     super(props);
     this.error_data = new Map();
 
-    changeVisibility = changeVisibility.bind(this);
+    this.state = {
+      newError: false,
+      isToggleOn: true
+    }
   }
 
-  onClickErr(ev, node, nodes) {
-    trackAnalyticsEvent('scope.node.click', {
-      layout: GRAPH_VIEW_MODE,
-      parentTopologyId: nodes.get('parentId'),
-      topologyId: nodes.get('id'),
-    });
+  getNumErrors = () => {
+    return numErrors;
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.data.length > prevProps.data.length) {
+      this.setState({
+        newError: true,
+      })
+    }
+  }
+
+  clickToggle = () => {
+    this.setState({
+      newError: false,
+      isToggleOn: !this.state.isToggleOn
+    })
+
+  }
+
+  onClickErr(ev, node) {
     this.props.clickNode(node.id, node.label, ev.target.getBoundingClientRect(), 'pods');
   }
+
   render() {
-    const { isDashboardViewMode } = this.props;
-    var nodes = this.props.current_nodes;
-    var data = formatData(nodes, "pods");
+    const { isDashboardViewMode, data } = this.props;
+    const { newError, isToggleOn } = this.state;
     setNumErrors(data);
     var allGoodMsg = false;
    if (data.length === 0 && isDashboardViewMode) {
     allGoodMsg = true;
    }
-
-   if (isVisible){
+   if (isVisible && data[0] && Array.isArray(data)){
     return (
       <div className='err-bar' >
+        { !isDashboardViewMode && <ErrorToggle 
+          isToggleOn={isToggleOn} 
+          onClick={this.clickToggle} 
+          newError={newError} 
+          getNumErrors={this.getNumErrors}
+          />
+        }
         { allGoodMsg ? 
-          <div>You have no errors! All good!</div> :
-          <div>
-            {data.map((element) => 
-              <Toast >
-                <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element,nodes)} ><ErrorIcon />{element.name}... {element.status}</ToastBody>      
-              </Toast>
-            )}
-          </div>
-       }  
-      </div>
+          <div>You have no errors! All good!</div> : 
+          (isToggleOn ? 
+            <div>
+              {data.map((element) => 
+                <Toast >
+                  <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} ><ErrorIcon />Container: {element.label} => {element.status}</ToastBody>      
+                </Toast>
+              )}
+            </div> : 
+            <div></div>
+          )
+        }
+        </div>
     );
   }
     else {
@@ -126,7 +143,8 @@ const mapStatetoProps = (state) => ({
   current_nodes: state.get('nodesByTopology'),
   nodes: shownNodesSelector(state),
   currentTopology: state.get('currentTopology'),
-  isDashboardViewMode: isDashboardViewModeSelector(state)
+  isDashboardViewMode: isDashboardViewModeSelector(state),
+  data: state.get('errorData').toList().toJS()
 	})
 
 const mapDispatchToProps = (dispatch) => ({

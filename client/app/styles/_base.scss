@@ -1851,6 +1851,8 @@ $border-radius-hard: 25px;
 
 .err-bar{
   position: static;
+  display: flex;
+  flex-direction: column;
   overflow: auto;
   height: 100%;
   line-height: 120%;
@@ -1858,30 +1860,24 @@ $border-radius-hard: 25px;
   cursor: pointer;
 }
 
+$color-ashRed: 	#DC3545;
+
+.err-no-new-err {
+  background-color: $color-white
+}
+
+.err-new-err {
+  background-color: $color-ashRed;
+  color: $color-white
+}
+
 .err-toggle {
-  background-color: $color-white;
+  width: 100%;
   opacity: 1;
 }
 
-$color-ashRed: 	#DC3545;
-
 .err-toggle:hover {
   background-color: $color-ashRed;
-}
-
-.err-toggle-open {
-  width: 348px;
-  position: absolute;
-  bottom: 195px;
-  
-  // position: relative;
-  // bottom: 10px;
-}
-
-.err-toggle-closed { 
-  position: absolute;
-  bottom: 10px;
-  width: 348px;
 }
 
 .err-wrapper {
@@ -1990,16 +1986,6 @@ $color-ashRed: 	#DC3545;
 //Breadcrumb
 
 .breadcrumb{
-<<<<<<< HEAD
-  z-index: $layer-modal;
-  background-color: $label-background-color;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  .breadcrumbitem{
-    font-size: $font-size-normal;
-    float: none;
-=======
   // position: relative;
   z-index: $layer-front;
   background-color: $label-background-color;
@@ -2009,7 +1995,6 @@ $color-ashRed: 	#DC3545;
   .breadcrumbitem{
     font-size: $font-size-normal;
     // float: none;
->>>>>>> b3e1c13e6473ed5ce64cf1f9efb68aecd4c69c6c
     display: inline;
   }
   .level{
