@@ -13,7 +13,7 @@ import { isDashboardViewModeSelector } from '../selectors/topology'
 import { APIcall } from '../utils/web-api-utils';
 import { clickNode } from '../actions/app-actions';
 
-export const ErrorIcon = () => <Icon icon={warning} />;
+export const ErrorIcon = () => <Icon icon={warning} size={18}/>;
 
 export const index_topoById = (topo, data) => {
  var sanity_check;
@@ -97,7 +97,11 @@ export class ErrorBar extends React.Component {
           <div>
             {data.map((element) => 
               <Toast >
-                <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} ><ErrorIcon />Container: {element.label} => {element.status}</ToastBody>      
+                <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} >
+                  {/* <div style={{color: '#000000'}}><ErrorIcon  /></div>  */}
+                  <div></div>
+                  <div> <i className="fas fa-exclamation-circle error-icon"></i> &nbsp; <b>[Container] {element.label} &nbsp;- </b> &nbsp; {element.status}</div>
+                </ToastBody>      
               </Toast>
             )}
           </div>

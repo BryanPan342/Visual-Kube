@@ -12,7 +12,6 @@ import ErrorBar from './error-bar';
 import FilterModal from './filter-modal';
 import Logo from './logo';
 import Footer from './footer';
-import Sidebar from './sidebar';
 import HelpPanel from './help-panel';
 import TroubleshootingMenu from './troubleshooting-menu';
 import Search from './search';
@@ -240,7 +239,11 @@ class App extends React.Component {
               <div style={{}}>
                 <Search />
               </div>
-              <FilterModal />
+              <FilterModal 
+                isTableViewMode={this.props.isTableViewMode}
+                isGraphViewMode={this.props.isGraphViewMode}
+                isResourceViewMode={this.props.isResourceViewMode}
+                showingNetworkSelector={this.props.showingNetworkSelector}/>
               { !isDashboardViewMode && <Topologies /> }
               <ViewModeSelector />
               <TimeControl />

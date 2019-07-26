@@ -1439,6 +1439,12 @@ $border-radius-hard: 25px;
 
 }
 
+$color-error: #F12312;
+
+.error-icon {
+  color: $color-error;
+}
+
 .sidebar {
   //OLD THINGS ARE COMMENTED OUT
   // position: fixed;
