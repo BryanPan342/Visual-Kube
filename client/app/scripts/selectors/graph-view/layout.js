@@ -118,13 +118,19 @@ export const layoutNodesSelector = createSelector(
     graphNodesSelector,
     translationToViewportCenterSelector,
     circularLayoutScalarsSelector,
+    state => state.get('currentTopologyId'),
+    state => state.get('errorData'),
   ],
-  (selectedNodeId, focusedNodesIds, graphNodes, translationToCenter, layoutScalars) => {
+  (selectedNodeId, focusedNodesIds, graphNodes, translationToCenter, layoutScalars, topologyId, errorData) => {
     const { circularRadius, circularInnerAngle } = layoutScalars;
-
     // Do nothing if the layout doesn't contain the selected node anymore.
     if (!selectedNodeId) {
-      return graphNodes;
+      if(topologyId === 'weave'){
+        console.log(errorData.toMap().toJS());
+        return errorData;
+      }
+      else
+        return graphNodes;
     }
 
     // Fix the selected node in the viewport center.
