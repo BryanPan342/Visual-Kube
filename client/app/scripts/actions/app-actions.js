@@ -18,6 +18,8 @@ import {
   doRequest,
   getApiPath,
   APIcall,
+  getTopoFromId,
+  getLabelAndParentsFromId
 } from '../utils/web-api-utils';
 import { isPausedSelector } from '../selectors/time-travel';
 import {

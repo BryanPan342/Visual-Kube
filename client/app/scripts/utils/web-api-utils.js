@@ -283,7 +283,7 @@ export function getLabelAndParentsFromId(id, dispatch){
 // }
 
 
-function getNodesOnce(getState, dispatch) {
+function getNodesOnce(getState, dispatch, pod = false) {
   const state = getState();
   let topologyUrl; 
   let topologyOptions; 

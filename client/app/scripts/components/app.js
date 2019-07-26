@@ -61,8 +61,7 @@ import {
   ESC_KEY_CODE,
 } from '../constants/key-codes';
 import Breadcrumb from './breadcrumb';
-import NodeDetailsRelativesLink from './node-details/node-details-relatives-link';
-import NodeDetailsRelatives from './node-details/node-details-relatives';
+import {nodesLoadedSelector} from '../selectors/node-filters';
 
 const keyPressLog = debug('scope:app-key-press');
 
@@ -251,8 +250,7 @@ class App extends React.Component {
               <TimeControl />
             </div>
           </div>
-
-          <Breadcrumb />
+          
           {/* <NodeDetailsRelatives /> */}
           {/* <NodeDetailsRelativesLink /> */}
 
@@ -301,7 +299,7 @@ function mapStateToProps(state) {
     timeTravelTransitioning: state.get('timeTravelTransitioning'),
     topologyViewMode: state.get('topologyViewMode'),
     urlState: getUrlState(state),
-    // nodesLoaded: nodesLoadedSelector(state)
+    nodesLoaded: nodesLoadedSelector(state)
   };
 }
 
