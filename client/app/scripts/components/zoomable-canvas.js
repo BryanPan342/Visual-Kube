@@ -222,7 +222,7 @@ class ZoomableCanvas extends React.Component {
           state.translateY += Math.max(0, viewportMax.y - contentMax.y);
           state.translateY -= Math.max(0, contentMin.y - viewportMin.y);
           break;
-        case CONTENT_INCLUDED:
+        case CONTENT_INCLUDED: 
           // These lines will adjust the translation by 'minimal effort' in
           // such a way that the content is always at least PARTLY contained
           // within the viewport, i.e. that the intersection between the
