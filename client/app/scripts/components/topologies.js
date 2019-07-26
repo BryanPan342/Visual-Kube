@@ -26,7 +26,6 @@ class Topologies extends React.Component {
       parentTopologyId: topology.get('parentId'),
       topologyId: topology.get('id'),
     });
-    console.log('Host Topology: ', topology.toList().toJS())
     this.props.clickTopology(ev.currentTarget.getAttribute('rel'));
   }
 

@@ -214,7 +214,11 @@ function getNodesForTopologies(state, dispatch, topologyIds, topologyOptions = m
 }
 
 export function getTopoFromId(id) {
-  let slicedId = id.slice(-5); 
+  let slicedId;
+  if(id)
+    slicedId = id.slice(-5); 
+  else  
+    slicedId = "1";
   let topo;
   switch (slicedId) {
     case "<pod>":
@@ -239,6 +243,7 @@ export function getTopoFromId(id) {
 export function getLabelAndParentsFromId(id, dispatch){
   const topology = getTopoFromId(id)
   let url = `${getApiPath()}/api/topology/${topology}/${id}`
+  let parents = new Map();
   return doRequest({
     error: (req) => {
       log(`Error in nodes request: ${req.responseText}`);
@@ -246,14 +251,20 @@ export function getLabelAndParentsFromId(id, dispatch){
     },
     success: (res) => {
       let label = res.node.label;
-      let nodeId = res.node.id
+      let nodeId = res.node.id;
+      let topo;
+      console.log(res);
       if(res.node.parents){
-      let parents = res.node.parents;
-      dispatch(addLabelAndParentsToState(label, nodeId, parents));
-    }
-    else{
-      dispatch(addLabelAndParentsToState(label, nodeId, ''));
-    }
+        for(var i in res.node.parents){
+          topo = getTopoFromId(res.node.parents[i].id);
+          if(topo)
+            parents.set(topo, res.node.parents[i]);
+        }
+        dispatch(addLabelAndParentsToState(getTopoFromId(nodeId), label, nodeId, parents));
+      }
+      else{
+        dispatch(addLabelAndParentsToState(getTopoFromId(nodeId), label, nodeId, ''));
+      }
     },
     url
   })

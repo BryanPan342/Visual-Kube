@@ -400,11 +400,10 @@ function updateTopology(dispatch, getState) {
   // NOTE: This is currently not needed for our static resource
   // view, but we'll need it here later and it's simpler to just
   // keep it than to redo the nodes delta updating logic.
-  getNodes(getState, dispatch);
+  getNodes(getState, dispatch, true);
 }
 
 export function clickShowTopologyForNode(topologyId, nodeId) {
-  console.log('Click Show Topology FOr Node')
   return (dispatch, getState) => {
     dispatch({
       nodeId,
@@ -878,9 +877,9 @@ export function setStoreViewState(storeViewState) {
 }
 
 // function added for getLabelAndParentsFromId
-export function addLabelAndParentsToState(label, nodeId, parents){
+export function addLabelAndParentsToState(topo,label, nodeId, parents){
   return {
-    breadcrumb: [label, nodeId,parents],
+    breadcrumb: [topo, label, nodeId,parents],
     type: ActionTypes.UPDATE_BREADCRUMB
     }
 }
