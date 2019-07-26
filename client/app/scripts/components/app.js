@@ -238,7 +238,12 @@ class App extends React.Component {
               <div style={{}}>
                 <Search />
               </div>
-              <FilterModal />
+              <FilterModal 
+                isTableViewMode={this.props.isTableViewMode}
+                isGraphViewMode={this.props.isGraphViewMode}
+                isResourceViewMode={this.props.isResourceViewMode}
+                showingNetworkSelector={this.props.showingNetworkSelector}
+              />
               { !isDashboardViewMode && <Topologies /> }
               <ViewModeSelector />
               <TimeControl />
