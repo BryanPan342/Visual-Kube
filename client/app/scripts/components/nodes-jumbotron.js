@@ -5,8 +5,7 @@ import NodesChart from '../charts/nodes-chart';
 
 export function changeColor(incomingJumboColor)
 {
-  this.state.jumboColor = incomingJumboColor;
-  this.forceUpdate();
+  this.setState({jumboColor: incomingJumboColor});
 }
 
 class NodesJumbotron extends React.Component {
@@ -21,7 +20,6 @@ class NodesJumbotron extends React.Component {
     render() {
     return (
       <div id="NodeJumbotron" className={this.state.jumboColor}>
-        <h5>Host: Minikube / Pod: AshPod / Container: AshContainer / </h5>
         <NodesChart/>
       </div>
     );

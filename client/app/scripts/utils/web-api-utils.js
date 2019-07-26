@@ -258,7 +258,6 @@ function getNodesOnce(getState, dispatch, pod = false) {
     optionsQuery = buildUrlQuery(topologyOptions, state);
     url = `${getApiPath()}${topologyUrl}?${optionsQuery}`;
   }
-  console.log(url);
   //Either nest doRequests inside each other or use a .then?
   doRequest({
     error: (req) => {

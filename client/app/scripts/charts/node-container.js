@@ -65,7 +65,11 @@ class NodeContainer extends React.Component {
         {changeColor("jumboColor4");}
     }
 
-    ashShapeString = 'visualkube';
+    if (ashShapeString != 'cloud')
+    {
+      ashShapeString = 'visualkube';
+    }
+
     return ashShapeString;
   }
 

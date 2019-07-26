@@ -74,7 +74,7 @@ class Nodes extends React.Component {
         {topologiesLoaded && nodesLoaded && this.renderConditionalEmptyTopologyError()}
 
         {/* {isGraphViewMode && <NodesChart />} */}
-        {isGraphViewMode && nodesLoaded && this.props.viewingNodeId ? <NodesJumbotron/> : <NodesChart />}
+        {isGraphViewMode && (this.props.viewingNodeId ? <NodesJumbotron/> : <NodesChart />)}
         {isTableViewMode && <NodesGrid />}
         {isResourceViewMode && <NodesResources />}
         {nodesLoaded && isDashboardViewMode && <Dashboard />}

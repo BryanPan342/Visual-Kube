@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import '../styles/main.scss';
-import '../images/favicon.ico';
+import '../images/favicon.png';
 import configureStore from './stores/configureStore';
 
 const store = configureStore();
