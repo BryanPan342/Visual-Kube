@@ -127,7 +127,7 @@ class NodeContainer extends React.Component {
         forceSvg={this.props.exportingGraph}
         searchTerms={this.props.searchTerms}
         metricColor={getMetricColor(metric)}
-        metricFormattedValue={this.ashMetric(metricFormattedValue)}
+        metricFormattedValue={metricFormattedValue}
         metricNumericValue={height}
         renderPrependedInfo={this.renderPrependedInfo}
         renderAppendedInfo={this.renderAppendedInfo}
