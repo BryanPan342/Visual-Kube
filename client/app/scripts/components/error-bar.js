@@ -13,6 +13,8 @@ import { isDashboardViewModeSelector } from '../selectors/topology'
 import { APIcall } from '../utils/web-api-utils';
 import { clickNode } from '../actions/app-actions';
 
+import ErrorToggle from './error-toggle';
+
 export const ErrorIcon = () => <Icon icon={warning} />;
 
 export const index_topoById = (topo, data) => {
@@ -55,19 +57,10 @@ export function formatData(nodes, topologyId){
 
 var isVisible = true;
 
-export function changeVisibility(){
-  isVisible = !isVisible;
-  this.forceUpdate();
-}
-
 var numErrors = 0;
 
 export function setNumErrors(nodes) {
   numErrors = nodes.length;
-}
-
-export function getNumErrors() {
-  return numErrors;
 }
 
 export class ErrorBar extends React.Component {
@@ -75,15 +68,39 @@ export class ErrorBar extends React.Component {
     super(props);
     this.error_data = new Map();
 
-    changeVisibility = changeVisibility.bind(this);
+    this.state = {
+      newError: false,
+      isToggleOn: true
+    }
+  }
+
+  getNumErrors = () => {
+    return numErrors;
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.data.length > prevProps.data.length) {
+      this.setState({
+        newError: true,
+      })
+    }
+  }
+
+  clickToggle = () => {
+    this.setState({
+      newError: false,
+      isToggleOn: !this.state.isToggleOn
+    })
+
   }
 
   onClickErr(ev, node) {
     this.props.clickNode(node.id, node.label, ev.target.getBoundingClientRect(), 'pods');
   }
+
   render() {
-    const { isDashboardViewMode } = this.props;
-    var data = this.props.state.get('errorData').toList().toJS();
+    const { isDashboardViewMode, data } = this.props;
+    const { newError, isToggleOn } = this.state;
     setNumErrors(data);
     var allGoodMsg = false;
    if (data.length === 0 && isDashboardViewMode) {
@@ -92,17 +109,27 @@ export class ErrorBar extends React.Component {
    if (isVisible && data[0] && Array.isArray(data)){
     return (
       <div className='err-bar' >
+        { !isDashboardViewMode && <ErrorToggle 
+          isToggleOn={isToggleOn} 
+          onClick={this.clickToggle} 
+          newError={newError} 
+          getNumErrors={this.getNumErrors}
+          />
+        }
         { allGoodMsg ? 
-          <div>You have no errors! All good!</div> :
-          <div>
-            {data.map((element) => 
-              <Toast >
-                <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} ><ErrorIcon />Container: {element.label} => {element.status}</ToastBody>      
-              </Toast>
-            )}
-          </div>
-       }  
-      </div>
+          <div>You have no errors! All good!</div> : 
+          (isToggleOn ? 
+            <div>
+              {data.map((element) => 
+                <Toast >
+                  <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} ><ErrorIcon />Container: {element.label} => {element.status}</ToastBody>      
+                </Toast>
+              )}
+            </div> : 
+            <div></div>
+          )
+        }
+        </div>
     );
   }
     else {
@@ -116,7 +143,8 @@ const mapStatetoProps = (state) => ({
   current_nodes: state.get('nodesByTopology'),
   nodes: shownNodesSelector(state),
   currentTopology: state.get('currentTopology'),
-  isDashboardViewMode: isDashboardViewModeSelector(state)
+  isDashboardViewMode: isDashboardViewModeSelector(state),
+  data: state.get('errorData').toList().toJS()
 	})
 
 const mapDispatchToProps = (dispatch) => ({

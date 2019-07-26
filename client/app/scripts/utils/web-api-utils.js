@@ -342,13 +342,15 @@ function getTopologiesOnce(getState, dispatch) {
     url
   });
 }
+
 function updateWebsocketChannel(getState, dispatch, forceRequest) {
   const topologyUrl = getCurrentTopologyUrl(getState());
-  // topologyOptions = activeTopologyOptionsSelector(getState());
-  const topologyOptions = makeMap();
+  const topologyOptions = activeTopologyOptionsSelector(getState());
   const websocketUrl = buildWebsocketUrl(topologyUrl, topologyOptions, getState());
   // Only recreate websocket if url changed or if forced (weave cloud instance reload);
+  
   const isNewUrl = websocketUrl !== currentUrl;
+
   // `topologyUrl` can be undefined initially, so only create a socket if it is truthy
   // and no socket exists, or if we get a new url.
   if (topologyUrl && (!socket || isNewUrl || forceRequest)) {
@@ -571,10 +573,7 @@ export async function APIcall(node_rank, node_id){
         if(json.status.containerStatuses[i].state.waiting)
           return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: json.status.containerStatuses[i].name}
         else
-          return await {status: "ContainerTerminating", id: node_id, label:node_label}
+          return await {status: "Terminating", id: node_id, label:json.status.containerStatuses[i].name}
       }
     });
-  // let json = await response.json();
-  // console.log(3);
-  // return await {status: json.status.containerStatuses[0].state.waiting.reason, id: node_id, label: node_label};
 }
