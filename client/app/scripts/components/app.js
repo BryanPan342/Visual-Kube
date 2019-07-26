@@ -238,7 +238,12 @@ class App extends React.Component {
               <div style={{}}>
                 <Search />
               </div>
-              <FilterModal />
+              <FilterModal 
+                isTableViewMode={this.props.isTableViewMode}
+                isGraphViewMode={this.props.isGraphViewMode}
+                isResourceViewMode={this.props.isResourceViewMode}
+                showingNetworkSelector={this.props.showingNetworkSelector}
+              />
               { !isDashboardViewMode && <Topologies /> }
               <ViewModeSelector />
               <TimeControl />
@@ -253,7 +258,7 @@ class App extends React.Component {
             {/* {isGraphViewMode && <ErrorBar />} */}
           </div>
           
-          {isGraphViewMode && this.props.nodesLoaded && <ErrorToggle /> }
+          {/* {isGraphViewMode && this.props.nodesLoaded && <ErrorToggle /> } */}
 
           {/* <Sidebar classNames={isTableViewMode ? 'sidebar-gridmode' : ''}>
             

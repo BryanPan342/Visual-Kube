@@ -1893,6 +1893,8 @@ $jumboColor4: rgba(7, 182, 220, 0.7);
 
 .err-bar{
   position: static;
+  display: flex;
+  flex-direction: column;
   overflow: auto;
   height: 100%;
   line-height: 120%;
@@ -1900,38 +1902,24 @@ $jumboColor4: rgba(7, 182, 220, 0.7);
   cursor: pointer;
 }
 
-.err-disabled {
-  background-color: $color-gray-100 !important;
-  color: $color-gray-600;
-  border-color: $color-gray-600 !important;
+$color-ashRed: 	#DC3545;
+
+.err-no-new-err {
+  background-color: $color-white
 }
-.err-disabled:hover {
-  background-color: $color-gray-100;
-  color: $color-gray-600;
+
+.err-new-err {
+  background-color: $color-ashRed;
+  color: $color-white
 }
 
 .err-toggle {
-  background-color: $color-white;
+  width: 100%;
   opacity: 1;
 }
 
 .err-toggle:hover {
   background-color: $color-ashRed;
-}
-
-.err-toggle-open {
-  width: 348px;
-  position: absolute;
-  bottom: 195px;
-  
-  // position: relative;
-  // bottom: 10px;
-}
-
-.err-toggle-closed { 
-  position: absolute;
-  bottom: 10px;
-  width: 348px;
 }
 
 .err-wrapper {
