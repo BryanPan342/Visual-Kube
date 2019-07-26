@@ -75,12 +75,60 @@ class NodeContainer extends React.Component {
 
   ashColor(rank, label, pseudo)
   {
-    if(this.props.error)
+    if(this.props.error) {
+      setNodeColor("rgba(255,0,0,0.7)");
       return rgb(255,0 ,0);
-    else if(this.props.parentErrors.has(this.props.id))
+    }
+    else if(this.props.parentErrors.has(this.props.id)){
+      setNodeColor("rgba(255,165,0,0.7)");
       return rgb(255,165,0);
-    else
-      return rgb(177, 156, 217);
+    }
+
+    if (ashColorCode === 1)
+    {
+      setNodeColor("rgba(50, 7, 172, 0.7)");
+      return rgb(50, 7, 172);
+    }
+    else if (ashColorCode === 2)
+    {
+      setNodeColor("rgb(71, 88, 239)");
+      return rgb(71, 88, 239);
+    }
+    else if (ashColorCode === 3)
+    {
+      setNodeColor("rgb(7, 182, 220)");
+      return rgb(7, 182, 220);
+    }
+    else if (ashColorCode === 4)
+    {
+      setNodeColor("rgb(82, 214, 214)");
+      return rgb(82, 214, 214);
+    }
+    else {
+      return rgb(0,0,0);
+    }
+  }
+
+  ashMetric(metricFormattedValue)
+  {
+    if (metricFormattedValue)
+    {
+      return metricFormattedValue;
+    }
+    else {
+      switch(ashColorCode) {
+        case 1:
+          return "Host";
+        case 2:
+          return "Pod";
+        case 3:
+          return "Cont.";
+        case 4:
+          return "App";
+        default:
+          return "Node";
+      }
+    }
   }
 
   renderPrependedInfo = () => {
