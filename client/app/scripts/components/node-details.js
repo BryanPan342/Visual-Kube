@@ -51,7 +51,8 @@ class NodeDetails extends React.Component {
   }
 
   renderTools() {
-    const showSwitchTopology = this.props.nodeId !== this.props.viewingNodeId;
+    let topo = getTopoFromId(this.props.nodeId);
+    const showSwitchTopology = (topo !== "processes" && topo !== "");
     const topologyTitle = `View ${this.props.label} in ${this.props.topologyId}`;
     if(getTopoFromId(this.props.id) != 'processes'){
       return (
