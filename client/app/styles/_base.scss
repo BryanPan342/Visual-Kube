@@ -1982,3 +1982,29 @@ $color-ashRed: 	#DC3545;
     }
   }
 }
+
+//Breadcrumb
+
+.breadcrumb{
+  // position: relative;
+  z-index: $layer-front;
+  background-color: $label-background-color;
+  // overflow-x: hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
+  .breadcrumbitem{
+    font-size: $font-size-normal;
+    // float: none;
+    display: inline;
+  }
+  .breadcrumbitemclick{
+    font-size: $font-size-normal;
+    // float: none;
+    cursor: pointer;
+    display: inline;
+  }
+  .level{
+    // font-size: $font-size-tiny;
+    color: $color-blue-700;
+  }
+}
