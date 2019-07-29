@@ -22,6 +22,11 @@ import NodeDetailsRelatives from './node-details/node-details-relatives';
 import NodeDetailsTable from './node-details/node-details-table';
 import Warning from './warning';
 
+var nodeColorString = "rgba(0,0,0,0)";
+
+export function setNodeColor(colorString){
+  nodeColorString = colorString;
+}
 import {getTopoFromId} from '../utils/web-api-utils';
 
 const log = debug('scope:node-details');
@@ -35,6 +40,8 @@ class NodeDetails extends React.Component {
   handleClickClose = (ev) => {
     ev.preventDefault();
     this.props.clickCloseDetails(this.props.nodeId);
+
+    setNodeColor = setNodeColor.bind(this);
   }
 
   handleShowTopologyForNode = (ev) => {
@@ -90,7 +97,7 @@ class NodeDetails extends React.Component {
     const tools = this.renderTools();
     const styles = {
       header: {
-        backgroundColor: nodeColor
+        backgroundColor: nodeColorString
       }
     };
 
@@ -163,10 +170,10 @@ class NodeDetails extends React.Component {
     const tools = this.renderTools();
     const styles = {
       controls: {
-        backgroundColor: brightenColor(nodeColor)
+        backgroundColor: brightenColor(nodeColorString)
       },
       header: {
-        backgroundColor: nodeColor
+        backgroundColor: nodeColorString
       }
     };
 
