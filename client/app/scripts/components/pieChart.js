@@ -29,8 +29,6 @@ class PieChart extends React.Component {
           plot_bgcolor: 'rgba(0,0,0,0)'}
         }
       />
-
-      
     );
   }
 }
