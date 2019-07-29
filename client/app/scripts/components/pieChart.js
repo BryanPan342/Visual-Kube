@@ -24,10 +24,13 @@ class PieChart extends React.Component {
        
         layout = {
           {height: 280, width: 300,
-          title: this.props.title}
+          title: this.props.title,
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)'}
         }
       />
 
+      
     );
   }
 }
