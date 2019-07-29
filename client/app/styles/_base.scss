@@ -5,7 +5,7 @@
 $color-ashPurple: #b19cd9;
 $color-ashBlue: #99cccc;
 $color-ashRed: 	#DC3545;
-$color-michelle: #295974;
+$color-michelle: #99ccff;
 $color-michelle-light: #06919a;
 
 /* sass-lint:disable variable-for-property */
@@ -1904,6 +1904,10 @@ $jumboColor4: rgba(7, 182, 220, 0.7);
 
 $color-ashRed: 	#DC3545;
 
+.err-icon {
+  color: $color-ashRed;
+}
+
 .err-no-new-err {
   background-color: $color-white
 }
@@ -1922,10 +1926,22 @@ $color-ashRed: 	#DC3545;
   background-color: $color-ashRed;
 }
 
+.err-disabled {
+  background-color: $color-gray-100 !important;
+  color: $color-gray-600;
+  border-color: $color-gray-600 !important;
+}
+
+.err-disabled:hover {
+  background-color: $color-gray-100 !important;
+  color: $color-gray-600 !important;
+  border-color: $color-gray-600 !important;
+}
+
 .err-wrapper {
   position: absolute;
   width: 350px;
-  max-height: 180px;
+  max-height: 200px;
   bottom: 10px;
   overflow: auto;
 }
