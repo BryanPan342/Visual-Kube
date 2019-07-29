@@ -47,6 +47,8 @@ const topologySorter = topology => topology.get('rank');
 // Initial values
 
 export const initialState = makeMap({
+  breadcrumb: [],
+  errorParents: makeMap(),
   incomingData: makeMap(),
   errorData: makeMap(),
   viewingNodeId: null,
@@ -351,12 +353,13 @@ export function rootReducer(state = initialState, action) {
     }
 
     case ActionTypes.CLICK_SHOW_TOPOLOGY_FOR_NODE: {
+      
       state = state.update(
         'nodeDetails',
         nodeDetails => nodeDetails.filter((v, k) => k === action.nodeId)
       );
       state = state.update('controlPipes', controlPipes => controlPipes.clear());
-      state = state.set('selectedNodeId', action.nodeId);
+      state = state.set('selectedNodeId', null);
       state = closeAllNodeDetails(state);
       state = state.set('viewingNodeId', action.nodeId);
       
@@ -368,14 +371,17 @@ export function rootReducer(state = initialState, action) {
       return state;
     }
 
+    case ActionTypes.UPDATE_BREADCRUMB: {
+      state = state.set('breadcrumb', action.breadcrumb);
+      return state
+    }
+
     case ActionTypes.CLICK_TOPOLOGY: {
       state = closeAllNodeDetails(state);
       state = state.set('viewingNodeId', null);
-      const currentTopologyId = state.get('currentTopologyId');
-      if (action.topologyId !== currentTopologyId) {
-        state = setTopology(state, action.topologyId);
-        state = clearNodes(state);
-      }
+     // const currentTopologyId = state.get('currentTopologyId');
+      state = setTopology(state, action.topologyId);
+      state = clearNodes(state);
 
       return state;
     }
@@ -544,6 +550,11 @@ export function rootReducer(state = initialState, action) {
       if (state.get('errorUrl') !== null) {
         state = state.set('errorUrl', action.errorUrl);
       }
+      return state;
+    }
+
+    case ActionTypes.ADD_PARENTS: {
+      state = state.set('errorParents', action.parents);
       return state;
     }
     

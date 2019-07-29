@@ -1,6 +1,5 @@
 import debug from 'debug';
 import { fromJS } from 'immutable';
-import { Map as makeMap } from 'immutable';
 
 import ActionTypes from '../constants/action-types';
 import { saveGraph } from '../utils/file-utils';
@@ -19,6 +18,8 @@ import {
   doRequest,
   getApiPath,
   APIcall,
+  getTopoFromId,
+  getLabelAndParentsFromId
 } from '../utils/web-api-utils';
 import { isPausedSelector } from '../selectors/time-travel';
 import {
@@ -399,7 +400,7 @@ function updateTopology(dispatch, getState) {
   // NOTE: This is currently not needed for our static resource
   // view, but we'll need it here later and it's simpler to just
   // keep it than to redo the nodes delta updating logic.
-  getNodes(getState, dispatch);
+  getNodes(getState, dispatch, true);
 }
 
 export function clickShowTopologyForNode(topologyId, nodeId) {
@@ -409,6 +410,7 @@ export function clickShowTopologyForNode(topologyId, nodeId) {
       topologyId,
       type: ActionTypes.CLICK_SHOW_TOPOLOGY_FOR_NODE
     });
+    getLabelAndParentsFromId(nodeId, dispatch);
     updateTopology(dispatch, getState);
   };
 }
@@ -531,7 +533,7 @@ export function receiveNodeDetails(details, requestTimestamp) {
   };
 }
 
-export function receiveNodesDelta(delta, topology) {
+export function receiveNodesDelta(delta) {
   return (dispatch, getState) => {
     if (!isPausedSelector(getState())) {
       // Allow css-animation to run smoothly by scheduling it to run on the
@@ -590,15 +592,28 @@ export function getErrors(nodes){
 }
 
 function getIncoming(nodes){
+  var parents = new Map();
   return(dispatch) => {
     dispatch(clearErrorData());
     for( var i in nodes){
       if(nodes[i]['metadata'][0]['value'] !== "Running") {
-        APIcall(nodes[i].metadata[2].value, nodes[i].id, nodes[i].label)
+        APIcall(nodes[i].rank, nodes[i].id)
         .then(response=>{dispatch(receiveErrorData(response));});
+        for(var j in nodes[i].parents){
+          if(getTopoFromId(nodes[i].parents[j].id)){
+            parents.set(nodes[i].parents[j].id,true);
+          }
+        }
       }
     }
-  }
+    dispatch(updateParents(parents));
+  } 
+}
+function updateParents(parents){
+  return{
+    parents,
+    type:ActionTypes.ADD_PARENTS,
+  };
 }
 
 function clearErrorData(){
@@ -859,4 +874,12 @@ export function setStoreViewState(storeViewState) {
     storeViewState,
     type: ActionTypes.SET_STORE_VIEW_STATE
   };
+}
+
+// function added for getLabelAndParentsFromId
+export function addLabelAndParentsToState(topo,label, nodeId, parents){
+  return {
+    breadcrumb: [topo, label, nodeId,parents],
+    type: ActionTypes.UPDATE_BREADCRUMB
+    }
 }

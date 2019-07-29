@@ -55,8 +55,6 @@ export function formatData(nodes, topologyId){
 
 
 
-var isVisible = true;
-
 var numErrors = 0;
 
 export function setNumErrors(nodes) {
@@ -106,7 +104,8 @@ export class ErrorBar extends React.Component {
    if (data.length === 0 && isDashboardViewMode) {
     allGoodMsg = true;
    }
-   if (isVisible && data[0] && Array.isArray(data)){
+   console.log(data);
+   if (data[0] && Array.isArray(data)){
     return (
       <div className='err-bar' >
         { !isDashboardViewMode && <ErrorToggle 
@@ -122,7 +121,10 @@ export class ErrorBar extends React.Component {
             <div>
               {data.map((element) => 
                 <Toast >
-                  <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} ><ErrorIcon />{element.label}... {element.status}</ToastBody>      
+                  <ToastBody className="err-item" onClick={ev => this.onClickErr(ev, element)} >
+                    {/* <ErrorIcon /> */}
+                    <b className='err-icon'> <i className="fas fa-exclamation-circle"></i> &nbsp; Container: {element.label} </b> <b> &nbsp; - &nbsp; {element.status} </b>
+                    </ToastBody>      
                 </Toast>
               )}
             </div> : 
@@ -133,7 +135,15 @@ export class ErrorBar extends React.Component {
     );
   }
     else {
-      return(<div></div>);
+      return(<div>
+        { !isDashboardViewMode && <ErrorToggle
+          isToggleOn={isToggleOn} 
+          onClick={this.clickToggle} 
+          newError={newError} 
+          getNumErrors={this.getNumErrors}
+          />
+        }
+      </div>);
     }
   }
 }

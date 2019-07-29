@@ -36,7 +36,7 @@ class FilterModal extends React.Component {
             <Sidebar classNames={isTableViewMode ? 'sidebar-gridmode' : ''}>
               {showingNetworkSelector && isGraphViewMode && <NetworkSelector />}
               {!isResourceViewMode && <Status />}
-              {!isResourceViewMode && <TopologyOptions />}
+              {<TopologyOptions/>}
             </Sidebar>
           </ModalBody>
           <ModalFooter>
@@ -47,6 +47,5 @@ class FilterModal extends React.Component {
     );
   }
 }
-
 
 export default FilterModal;
