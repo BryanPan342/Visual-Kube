@@ -8,7 +8,7 @@ import {
   receiveApiDetails, receiveNodesDelta, receiveNodeDetails, receiveControlError,
   receiveControlNodeRemoved, receiveControlPipe, receiveControlPipeStatus,
   receiveControlSuccess, receiveTopologies, receiveNotFound,
-  receiveNodesForTopology, receiveNodes, getErrors,
+  receiveNodesForTopology, receiveNodes, getErrors, addLabelAndParentsToState
 } from '../actions/app-actions';
 
 import { getCurrentTopologyUrl } from '../utils/topology-utils';
@@ -214,7 +214,11 @@ function getNodesForTopologies(state, dispatch, topologyIds, topologyOptions = m
 }
 
 export function getTopoFromId(id) {
-  let slicedId = id.slice(-5);
+  let slicedId;
+  if(id)
+    slicedId = id.slice(-5); 
+  else  
+    slicedId = "1";
   let topo;
   switch (slicedId) {
     case "<pod>":
@@ -235,6 +239,60 @@ export function getTopoFromId(id) {
   }
   return topo;
 }
+
+export function getLabelAndParentsFromId(id, dispatch){
+  const topology = getTopoFromId(id)
+  let url = `${getApiPath()}/api/topology/${topology}/${id}`
+  let parents = new Map();
+  return doRequest({
+    error: (req) => {
+      log(`Error in nodes request: ${req.responseText}`);
+      dispatch(receiveError(url));
+    },
+    success: (res) => {
+      let label = res.node.label;
+      let nodeId = res.node.id;
+      let topo;
+      console.log(res);
+      if(res.node.parents){
+        for(var i in res.node.parents){
+          topo = getTopoFromId(res.node.parents[i].id);
+          if(topo)
+            parents.set(topo, res.node.parents[i]);
+        }
+        dispatch(addLabelAndParentsToState(getTopoFromId(nodeId), label, nodeId, parents));
+      }
+      else{
+        dispatch(addLabelAndParentsToState(getTopoFromId(nodeId), label, nodeId, ''));
+      }
+    },
+    url
+  })
+}
+
+
+
+// export function getLabelAndParentsFromId(id, callback){
+//   console.log('ITS DONE', callback)
+//   const topology = getTopoFromId(id)
+//   let url = `${getApiPath()}/api/topology/${topology}/${id}`
+//   doRequest({
+//     error: (req) => {
+//       log(`Error in nodes request: ${req.responseText}`);
+//       dispatch(receiveError(url));
+//     },
+//     success: (res) => {
+//       console.log('res.node.label = ', res.node.label)
+//       let label = res.node.label;
+//       if(callback){
+//         console.log('ITS IN THE IF ')
+//         callback(label);
+//       }
+//     },
+//     url
+//   })
+// }
+
 
 function getNodesOnce(getState, dispatch, pod = false) {
   const state = getState();
@@ -360,6 +418,8 @@ function updateWebsocketChannel(getState, dispatch, forceRequest) {
 }
 
 export function getNodeDetails(getState, dispatch) {
+  // console.log('getState = ', getState)
+  // console.log('dispatch = ', dispatch)
   const state = getState();
   const nodeMap = state.get('nodeDetails');
   const topologyUrlsById = state.get('topologyUrlsById');

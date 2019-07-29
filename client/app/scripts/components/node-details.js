@@ -27,6 +27,7 @@ var nodeColorString = "rgba(0,0,0,0)";
 export function setNodeColor(colorString){
   nodeColorString = colorString;
 }
+import {getTopoFromId} from '../utils/web-api-utils';
 
 const log = debug('scope:node-details');
 
@@ -57,28 +58,30 @@ class NodeDetails extends React.Component {
   }
 
   renderTools() {
-    const showSwitchTopology = this.props.nodeId !== this.props.viewingNodeId;
+    let topo = getTopoFromId(this.props.nodeId);
+    const showSwitchTopology = (topo !== "processes" && topo !== "");
     const topologyTitle = `View ${this.props.label} in ${this.props.topologyId}`;
-
-    return (
-      <div className="node-details-tools-wrapper">
-        <div className="node-details-tools">
-          {showSwitchTopology &&
+    if(getTopoFromId(this.props.id) != 'processes'){
+      return (
+        <div className="node-details-tools-wrapper">
+          <div className="node-details-tools">
+            {showSwitchTopology &&
+              <i
+                title={topologyTitle}
+                className="fa fa-long-arrow-alt-left"
+                onClick={this.handleShowTopologyForNode}>
+                <span>Inspect Contents</span>
+              </i>
+            }
             <i
-              title={topologyTitle}
-              className="fa fa-long-arrow-alt-left"
-              onClick={this.handleShowTopologyForNode}>
-              <span>Inspect Contents</span>
-            </i>
-          }
-          <i
-            title="Close details"
-            className="fa fa-times close-details"
-            onClick={this.handleClickClose}
-          />
+              title="Close details"
+              className="fa fa-times close-details"
+              onClick={this.handleClickClose}
+            />
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 
   renderLoading() {

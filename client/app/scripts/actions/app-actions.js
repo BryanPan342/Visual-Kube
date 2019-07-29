@@ -19,6 +19,7 @@ import {
   getApiPath,
   APIcall,
   getTopoFromId,
+  getLabelAndParentsFromId
 } from '../utils/web-api-utils';
 import { isPausedSelector } from '../selectors/time-travel';
 import {
@@ -399,7 +400,7 @@ function updateTopology(dispatch, getState) {
   // NOTE: This is currently not needed for our static resource
   // view, but we'll need it here later and it's simpler to just
   // keep it than to redo the nodes delta updating logic.
-  getNodes(getState, dispatch);
+  getNodes(getState, dispatch, true);
 }
 
 export function clickShowTopologyForNode(topologyId, nodeId) {
@@ -409,6 +410,7 @@ export function clickShowTopologyForNode(topologyId, nodeId) {
       topologyId,
       type: ActionTypes.CLICK_SHOW_TOPOLOGY_FOR_NODE
     });
+    getLabelAndParentsFromId(nodeId, dispatch);
     updateTopology(dispatch, getState);
   };
 }
@@ -872,4 +874,12 @@ export function setStoreViewState(storeViewState) {
     storeViewState,
     type: ActionTypes.SET_STORE_VIEW_STATE
   };
+}
+
+// function added for getLabelAndParentsFromId
+export function addLabelAndParentsToState(topo,label, nodeId, parents){
+  return {
+    breadcrumb: [topo, label, nodeId,parents],
+    type: ActionTypes.UPDATE_BREADCRUMB
+    }
 }

@@ -60,7 +60,8 @@ import { VIEWPORT_RESIZE_DEBOUNCE_INTERVAL } from '../constants/timer';
 import {
   ESC_KEY_CODE,
 } from '../constants/key-codes';
-import { nodesLoadedSelector } from '../selectors/node-filters';
+import Breadcrumb from './breadcrumb';
+import {nodesLoadedSelector} from '../selectors/node-filters';
 
 const keyPressLog = debug('scope:app-key-press');
 
@@ -230,7 +231,7 @@ class App extends React.Component {
             <div className="selectors">
               <div className="logo">
                 {!isIframe &&
-                  <svg width="100%" height="100%" viewBox="150 -40 20 100">
+                  <svg width="100%" height="100%" viewBox="100 -40 20 100">
                     <Logo />
                   </svg>
                 }
@@ -250,6 +251,9 @@ class App extends React.Component {
             </div>
           </div>
           
+          {/* <NodeDetailsRelatives /> */}
+          {/* <NodeDetailsRelativesLink /> */}
+
           <Nodes />
         
           <div className='err-wrapper'>
