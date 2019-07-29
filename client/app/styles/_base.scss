@@ -1954,6 +1954,7 @@ $color-ashRed: 	#DC3545;
   height: 50em;
   width: 100%;
   overflow: hidden;
+  margin-top: 5rem;
 
   h1 {
     font-size: $font-size-huge;
@@ -1988,7 +1989,7 @@ $color-ashRed: 	#DC3545;
         .errors {
           position: relative;
           min-width: 520px;
-          margin: 5px;
+          margin: 20px;
           height: 80%;
           display: flex;
           justify-content: center;
