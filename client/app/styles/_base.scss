@@ -264,10 +264,9 @@ a {
     }
 
     .logo {
-      margin: -16px 0 0 8px;
-      height: 64px;
-      max-width: 250px;
-      min-width: 0;
+      display: flex;
+      height: 45px;
+      min-width: 175px;
     }
   }
 }
@@ -2067,3 +2066,9 @@ $color-ashRed: 	#DC3545;
     color: $color-blue-700;
   }
 }
+
+.my-image {
+  width: 35%;
+  height: 65%;
+  object-fit: contain;
+ }

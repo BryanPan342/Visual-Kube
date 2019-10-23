@@ -104,7 +104,6 @@ export class ErrorBar extends React.Component {
    if (data.length === 0 && isDashboardViewMode) {
     allGoodMsg = true;
    }
-   console.log(data);
    if (data[0] && Array.isArray(data)){
     return (
       <div className='err-bar' >

@@ -75,7 +75,11 @@ class NodeContainer extends React.Component {
 
   ashColor(rank, label, pseudo)
   {
-    if(this.props.error) {
+    if(this.props.label === "get-hacked"){
+      setNodeColor("rgba(139,0,0,0.7)")
+      return rgb(139,0,0);
+    }
+    else if(this.props.error || this.props.label === "hacker-pod") {
       setNodeColor("rgba(255,0,0,0.7)");
       return rgb(255,0 ,0);
     }

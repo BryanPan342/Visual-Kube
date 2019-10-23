@@ -270,30 +270,6 @@ export function getLabelAndParentsFromId(id, dispatch){
   })
 }
 
-
-
-// export function getLabelAndParentsFromId(id, callback){
-//   console.log('ITS DONE', callback)
-//   const topology = getTopoFromId(id)
-//   let url = `${getApiPath()}/api/topology/${topology}/${id}`
-//   doRequest({
-//     error: (req) => {
-//       log(`Error in nodes request: ${req.responseText}`);
-//       dispatch(receiveError(url));
-//     },
-//     success: (res) => {
-//       console.log('res.node.label = ', res.node.label)
-//       let label = res.node.label;
-//       if(callback){
-//         console.log('ITS IN THE IF ')
-//         callback(label);
-//       }
-//     },
-//     url
-//   })
-// }
-
-
 function getNodesOnce(getState, dispatch, pod = false) {
   const state = getState();
   let topologyUrl; 

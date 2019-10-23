@@ -230,8 +230,9 @@ class App extends React.Component {
 
             <div className="selectors">
               <div className="logo">
+                <img className="my-image" src="https://anagarajan25.github.io/favicon/favicon-32x32.png" />
                 {!isIframe &&
-                  <svg width="100%" height="100%" viewBox="100 -40 20 100">
+                  <svg width="100%" height="100%" viewBox="100 -25 20 100">
                     <Logo />
                   </svg>
                 }

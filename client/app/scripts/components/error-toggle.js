@@ -16,7 +16,6 @@ export default class ErrorToggle extends React.Component {
     }
 
     let style2 = '';
-    console.log(this.props.getNumErrors());
     if (this.props.getNumErrors() === 0){
       style2 = style2.concat('err-disabled');
       style = style.concat('err-disabled');
